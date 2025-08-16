@@ -1,3 +1,6 @@
+import random
+
+
 class Player:
     def __init__(self, player_id, name, cash_initial=2000):
         self.player_id = player_id
@@ -5,8 +8,11 @@ class Player:
         self.cash = cash_initial
         self.position = 0
 
-    def move(self, steps):
+    def move(self):
+        steps = random.randint(1, 6)
+        print(f"The dice landed on {steps}!")
         self.position = (self.position + steps) % 28
+        print(f"Your current position is {self.position}!")
 
     def buy_property(self, target_property):
         if self.cash < target_property.price:
