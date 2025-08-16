@@ -34,4 +34,14 @@ class Player:
             target_property.level += 1
             target_property.rent *= 2
 
-
+    def pay_rent(self, target_property, target_player):
+        if self.cash < target_property.rent:
+            print(f"Not enough money to pay rent for {target_property.name}...")
+            print(f"{target_player.name} WON!!!")
+            return False
+            #TODO: Generalise to more than 2 players
+        else:
+            print(f"Successfully paid ${target_property.rent} for {target_property.name}...")
+            self.cash -= target_property.rent
+            target_player.rent += target_property.rent
+            return True
