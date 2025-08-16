@@ -1,10 +1,11 @@
 class Property:
-    def __init__(self, name, price, initial_rent, level, group):
+    def __init__(self, name, price, initial_rent, level, group, owner_id = 0):
         self.name = name
         self.price = price
-        self.initial_rent = initial_rent
+        self.rent = initial_rent
         self.level = level
         self.group = group
+        self.owner_id = owner_id
 
 
 class Chest:
