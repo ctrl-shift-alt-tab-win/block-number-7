@@ -1,6 +1,11 @@
-class Property:
-    def __init__(self, name, price, initial_rent, level, group, owner_id = 0):
+class Item:
+    def __init__(self, name):
         self.name = name
+
+
+class Property(Item):
+    def __init__(self, name, price, initial_rent, level, group, owner_id=0):
+        super().__init__(name)
         self.price = price
         self.rent = initial_rent
         self.level = level
@@ -8,8 +13,10 @@ class Property:
         self.owner_id = owner_id
 
 
-class Chest:
-    pass #TODO
+class Chest(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
     # 1% Legendary
     # 4% Epic
     # 10% Rare
@@ -17,20 +24,28 @@ class Chest:
     # 60% Common
 
 
-class Pond:
-    pass #TODO
+class Pond(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
 
 
-class Bank:
-    pass #TODO
+class Bank(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
 
 
-class Supermarket:
-    pass #TODO
+class Supermarket(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
 
 
-class Hotel:
-    pass #TODO
+class Hotel(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
 
 
 class Board:
@@ -50,11 +65,11 @@ class Board:
         self.property_e1 = Property(name="E1", price=600, initial_rent=60, level=0, group="E")
         self.property_e2 = Property(name="E2", price=800, initial_rent=80, level=0, group="E")
         self.property_e3 = Property(name="E3", price=1200, initial_rent=200, level=0, group="E")
-        self.hotel = Hotel()
-        self.pond = Pond()
-        self.supermarket = Supermarket()
-        self.bank = Bank()
-        self.chest = Chest()
+        self.hotel = Hotel("Hotel")
+        self.pond = Pond("Pond")
+        self.supermarket = Supermarket("Supermarket")
+        self.bank = Bank("Bank")
+        self.chest = Chest("Chest")
 
         self.item_list = [
             [self.hotel],
