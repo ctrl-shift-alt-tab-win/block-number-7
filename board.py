@@ -4,16 +4,22 @@ class Item:
 
 
 class Property(Item):
-    def __init__(self, name, price, initial_rent, level, group, owner_id=0):
+    def __init__(self, name, price, initial_rent, group, level=0, owner_id=0):
         super().__init__(name)
         self.price = price
         self.rent = initial_rent
-        self.level = level
         self.group = group
+        self.level = level
         self.owner_id = owner_id
 
 
-class Chest(Item):
+class Tower(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
+
+
+class GoodChest(Item):
     def __init__(self, name):
         super().__init__(name)
     #TODO
@@ -22,6 +28,29 @@ class Chest(Item):
     # 10% Rare
     # 25% Uncommon
     # 60% Common
+
+
+class BadChest(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
+    # 1% Legendarily Awful
+    # 4% Epically Awful
+    # 10% Rarely Awful
+    # 25% Uncommonly Awful
+    # 60% Commonly Awful
+
+
+class Hotel(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
+
+
+class Park(Item):
+    def __init__(self, name):
+        super().__init__(name)
+    #TODO
 
 
 class Pond(Item):
@@ -42,7 +71,7 @@ class Supermarket(Item):
     #TODO
 
 
-class Hotel(Item):
+class Restaurant(Item):
     def __init__(self, name):
         super().__init__(name)
     #TODO
@@ -50,54 +79,64 @@ class Hotel(Item):
 
 class Board:
     def __init__(self):
-        self.property_a1 = Property(name="A1", price=100, initial_rent=10, level=0, group="A")
-        self.property_a2 = Property(name="A2", price=120, initial_rent=12, level=0, group="A")
-        self.property_a3 = Property(name="A3", price=150, initial_rent=16, level=0, group="A")
-        self.property_b1 = Property(name="B1", price=200, initial_rent=15, level=0, group="B")
-        self.property_b2 = Property(name="B2", price=240, initial_rent=30, level=0, group="B")
-        self.property_c1 = Property(name="C1", price=280, initial_rent=27, level=0, group="C")
-        self.property_c2 = Property(name="C2", price=300, initial_rent=30, level=0, group="C")
-        self.property_c3 = Property(name="C3", price=360, initial_rent=38, level=0, group="C")
-        self.property_c4 = Property(name="C4", price=400, initial_rent=40, level=0, group="C")
-        self.property_d1 = Property(name="D1", price=420, initial_rent=42, level=0, group="D")
-        self.property_d2 = Property(name="D2", price=500, initial_rent=50, level=0, group="D")
-        self.property_d3 = Property(name="D3", price=540, initial_rent=54, level=0, group="D")
-        self.property_e1 = Property(name="E1", price=600, initial_rent=60, level=0, group="E")
-        self.property_e2 = Property(name="E2", price=800, initial_rent=80, level=0, group="E")
-        self.property_e3 = Property(name="E3", price=1200, initial_rent=200, level=0, group="E")
-        self.hotel = Hotel("Hotel")
-        self.pond = Pond("Pond")
+        self.properties_dict = {
+            "A1": Property(name="Aspen View 1", price=160, initial_rent=12, group="A"),
+            "A2": Property(name="Aspen View 2", price=180, initial_rent=18, group="A"),
+            "A3": Property(name="Aspen View 3", price=240, initial_rent=24, group="A"),
+            "B1": Property(name="Birch Street 1", price=200, initial_rent=16, group="B"),
+            "B2": Property(name="Birch Street 2", price=520, initial_rent=45, group="B"),
+            "C1": Property(name="Cedar Heights 1", price=250, initial_rent=25, group="C"),
+            "C2": Property(name="Cedar Heights 2", price=280, initial_rent=28, group="C"),
+            "C3": Property(name="Cedar Heights 3", price=600, initial_rent=64, group="C"),
+            "C4": Property(name="Cedar Heights 4", price=640, initial_rent=70, group="C"),
+            "D1": Property(name="Downtown Plaza 1", price=1000, initial_rent=80, group="D"),
+            "D2": Property(name="Downtown Plaza 2", price=1200, initial_rent=118, group="D"),
+            "D3": Property(name="Downtown Plaza 3", price=1400, initial_rent=130, group="D"),
+            "E1": Property(name="Emerald Estates 1", price=360, initial_rent=50, group="E"),
+            "E2": Property(name="Emerald Estates 2", price=400, initial_rent=60, group="E"),
+            "E3": Property(name="Emerald Estates 3", price=500, initial_rent=54, group="E")
+        }
+        self.towers_dict = {
+            "T1": Tower(name="T1"),
+            "T2": Tower(name="T2"),
+            "T3": Tower(name="T3")
+        }
+        self.good_chest = GoodChest("Chest")
+        self.bad_chest = BadChest("Bad Chest")
+        self.hotel = Hotel("Block No.7 Hotel")
+        self.park = Park("City Park")
+        self.pond = Pond("Mirror Pond")
+        self.bank = Bank("Bank of Avocados")
         self.supermarket = Supermarket("Supermarket")
-        self.bank = Bank("Bank")
-        self.chest = Chest("Chest")
+        self.restaurant = Restaurant("Object Oriented Restaurant")
 
         self.item_list = [
-            [self.hotel],
-            [self.property_a1, self.hotel],
-            [self.property_a2, self.hotel],
-            [self.chest, self.hotel],
-            [self.property_e1, self.pond],
-            [self.property_a3, self.property_e2],
-            [self.property_b1, self.property_e3],
-            [self.chest],
-            [self.property_b1],
-            [self.property_b2],
-            [self.property_c1],
-            [self.property_c2],
-            [],
+            [self.towers_dict["T3"], self.hotel],
+            [self.properties_dict["A1"], self.hotel],
+            [self.properties_dict["A2"], self.hotel],
+            [self.good_chest, self.hotel],
+            [self.pond],
+            [self.properties_dict["A3"]],
+            [self.properties_dict["B1"]],
+            [self.bad_chest],
+            [self.properties_dict["B1"]],
+            [self.properties_dict["B2"]],
+            [self.park],
+            [self.properties_dict["C1"]],
+            [self.properties_dict["C2"]],
             [self.supermarket],
-            [self.chest],
+            [self.good_chest, self.good_chest],
             [self.supermarket],
-            [self.supermarket],
-            [self.property_c3],
-            [self.property_c4],
+            [self.properties_dict["C3"]],
+            [self.properties_dict["C4"]],
+            [self.restaurant],
             [],
-            [self.property_d1],
-            [self.chest],
-            [self.property_d1],
-            [self.property_d2],
-            [self.property_d3],
-            [],
-            [self.bank],
-            [self.property_a1],
+            [self.properties_dict["D1"]],
+            [self.towers_dict["T1"], self.good_chest],
+            [self.properties_dict["D1"], self.towers_dict["T1"]],
+            [self.properties_dict["D2"], self.towers_dict["T2"]],
+            [self.properties_dict["D3"], self.towers_dict["T2"]],
+            [self.towers_dict["T3"]],
+            [self.towers_dict["T3"], self.bank],
+            [self.properties_dict["A1"], self.towers_dict["T3"]],
         ] # 2D List stating accessible items from a certain position
