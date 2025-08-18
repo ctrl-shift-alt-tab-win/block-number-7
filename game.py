@@ -46,7 +46,23 @@ def game_step(player):
                 input("Press ENTER to pay rent.\n")
                 player.pay_rent(item, players_list[item.owner_id-1])
 
-        elif isinstance(item, board.Chest):
+        elif isinstance(item, board.Tower):
+            input("Feature currently not available. Press ENTER to continue.\n")
+            #TODO
+
+        elif isinstance(item, board.GoodChest):
+            input("Feature currently not available. Press ENTER to continue.\n")
+            #TODO
+
+        elif isinstance(item, board.BadChest):
+            input("Feature currently not available. Press ENTER to continue.\n")
+            #TODO
+
+        elif isinstance(item, board.Hotel):
+            input("Feature currently not available. Press ENTER to continue.\n")
+            #TODO
+
+        elif isinstance(item, board.Park):
             input("Feature currently not available. Press ENTER to continue.\n")
             #TODO
 
@@ -62,7 +78,7 @@ def game_step(player):
             input("Feature currently not available. Press ENTER to continue.\n")
             #TODO
 
-        elif isinstance(item, board.Hotel):
+        elif isinstance(item, board.Restaurant):
             input("Feature currently not available. Press ENTER to continue.\n")
             #TODO
 
