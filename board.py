@@ -140,3 +140,12 @@ class Board:
             [self.towers_dict["T3"], self.bank],
             [self.properties_dict["A1"], self.towers_dict["T3"]],
         ] # 2D List stating accessible items from a certain position
+
+    def check_for_complete_group(self, letter, player):
+        filtered_properties = [p for p in self.properties_dict.values() if p.group == letter]
+        if all(p.owner_id == player.player_id for p in filtered_properties):
+            for p in filtered_properties:
+                p.rent *= 2
+            return True
+        else:
+            return False

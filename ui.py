@@ -9,6 +9,7 @@ class ConsoleUIGame:
 
     def turn_start_roll_dice(self, player):
         print(f"-------{player.name}'s turn-------")
+        print(f"Your cash: {player.cash}")
         print(f"You are at position {player.position}.")
         input("Press ENTER to roll the dice!\n")
 
@@ -44,6 +45,7 @@ class ConsoleUIProperty:
 
     def buy_property_success(self, item, player):
         print(f"Successfully bought {item.name}!")
+        print(f"The rent of {item.name} is currently {item.rent}")
         print(f"Your cash is now {player.cash}.")
         input("Press ENTER to continue.\n")
 
@@ -54,9 +56,11 @@ class ConsoleUIProperty:
     def player_refuse_buy_property(self):
         input("Alright. Press ENTER to continue.\n")
 
-    def ask_upgrade_property(self, item):
+    def ask_upgrade_property(self, item, player):
         print(f"You own {item.name}.")
         print(f"{item.name} is at level {item.level}.")
+        print(f"Your cash: {player.cash}")
+        print(f"Upgrade cost: {item.price}")
         choice = input(f"Would you like to upgrade {item.name}? (Y/N): ")
         return choice
 
@@ -91,6 +95,9 @@ class ConsoleUIProperty:
     def pay_rent_failure(self, item):
         print(f"Not enough money to pay rent for {item.name}...")
 
+    def player_own_complete_group(self, letter):
+        print(f"You now own all properties in group {letter}! Rent doubled.")
+        input("Press ENTER to continue.\n")
 
 
 

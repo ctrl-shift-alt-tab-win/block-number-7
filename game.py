@@ -26,12 +26,14 @@ def game_step(player):
                 if choice == "Y":
                     if player.buy_property(item):
                         ui.property.buy_property_success(item, player)
+                        if game_board.check_for_complete_group(item.group, player):
+                            ui.property.player_own_complete_group(item.group)
                     else:
                         ui.property.buy_property_failure(item)
                 else:
                     ui.property.player_refuse_buy_property()
             elif item.owner_id == player.player_id:
-                choice = ui.property.ask_upgrade_property(item)
+                choice = ui.property.ask_upgrade_property(item, player)
                 if choice == "Y":
                     status = player.upgrade_property(item)
                     if status == 1:
