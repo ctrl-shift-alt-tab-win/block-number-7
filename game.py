@@ -1,122 +1,97 @@
 import sys
 
-import board
+from board import *
 from player import Player
+from ui import ConsoleUI
 
 
 def game_start_routine():
-    print("Welcome!")
-    player1_name = input("Enter name of player 1: ")
-    player2_name = input("Enter name of player 2: ")
+    ui.game.welcome()
+    player1_name, player2_name = ui.game.enter_names()
     players = [Player(1, player1_name), Player(2, player2_name)]
     return players
 
 
 def game_step(player):
-    print(f"-------{player.name}'s turn-------")
-    print(f"You are at position {player.position}.")
-    input("Press ENTER to roll the dice!\n")
+    ui.game.turn_start_roll_dice(player)
     steps, position = player.move()
-    print(f"The dice landed on {steps}!")
-    print(f"Your current position is {position}!")
-    input("Press ENTER to continue.\n")
+    ui.game.dice_landed(steps, position)
     accessible_items = game_board.item_list[player.position]
-    print(f"You currently border:")
+    ui.game.show_accessible_items(accessible_items)
     for item in accessible_items:
-        print(f"  {item.name}")
-    input("Press ENTER to continue.\n")
-    for item in accessible_items:
-        print(f"Considering {item.name}...")
-        if isinstance(item, board.Property):
+        ui.game.consider_an_item(item)
+        if isinstance(item, Property):
             if item.owner_id == 0:
-                print(f"No one owns {item.name}.")
-                print(f"Your cash: {player.cash}")
-                print(f"Cash needed to purchase {item.name}: {item.price}")
-                choice = input(f"Would you like to buy {item.name}? (Y/N): ")
+                choice = ui.property.ask_buy_property(item, player)
                 if choice == "Y":
                     if player.buy_property(item):
-                        print(f"Successfully bought {item.name}!")
-                        print(f"Your cash is now {player.cash}.")
-                        input("Press ENTER to continue.\n")
+                        ui.property.buy_property_success(item, player)
                     else:
-                        print(f"Not enough money to buy {item.name}...")
-                        input("Press ENTER to continue.\n")
+                        ui.property.buy_property_failure(item)
                 else:
-                    input("Alright. Press ENTER to continue.\n")
+                    ui.property.player_refuse_buy_property()
             elif item.owner_id == player.player_id:
-                print(f"You own {item.name}.")
-                print(f"{item.name} is at level {item.level}.")
-                choice = input(f"Would you like to upgrade {item.name}? (Y/N): ")
+                choice = ui.property.ask_upgrade_property(item)
                 if choice == "Y":
                     status = player.upgrade_property(item)
                     if status == 1:
-                        print(f"Successfully upgraded {item.name}!")
-                        print(f"Your cash is now {player.cash}.")
-                        print(f"{item.name} is now at level {item.level} and the rent is now {item.rent}.")
-                        input("Press ENTER to continue.\n")
+                        ui.property.upgrade_property_success(item, player)
                     elif status == 0:
-                        print(f"{item.name} is already at max level!")
-                        input("Press ENTER to continue.\n")
+                        ui.property.upgrade_property_failure_max_level(item)
                     elif status == -1:
-                        print(f"Not enough money to upgrade {item.name}...")
-                        input("Press ENTER to continue.\n")
+                        ui.property.upgrade_property_failure_money(item)
                 else:
-                    input("Alright. Press ENTER to continue.\n")
+                    ui.property.player_refuse_upgrade_property()
             else:
-                print(f"Oops, {item.name} is owned by {players_list[item.owner_id-1].name}.")
-                print(f"You need to pay rent of {item.rent}.")
-                input("Press ENTER to pay rent.\n")
-                target_player = players_list[item.owner_id-1]
+                target_player = players_list[item.owner_id - 1]
+                ui.property.need_to_pay_rent(item, target_player)
                 if player.pay_rent(item, target_player):
-                    print(f"Successfully paid ${item.rent} for {item.name}...")
-                    print(f"Your cash is now {player.cash}.")
-                    print(f"{target_player.name}'s cash is now {target_player.cash}.")
-                    input("Press ENTER to continue.\n")
+                    ui.property.pay_rent_success(item, player, target_player)
                 else:
-                    print(f"Not enough money to pay rent for {item.name}...")
-                    print(f"{target_player.name} WON!!!")
-                    input("Press ENTER to exit.\n")
+                    ui.property.pay_rent_failure(item)
+                    ui.game.won(target_player)
                     sys.exit()
                     # TODO: Generalise to more than 2 players
 
-        elif isinstance(item, board.Tower):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Tower):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.GoodChest):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, GoodChest):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.BadChest):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, BadChest):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.Hotel):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Hotel):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.Park):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Park):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.Pond):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Pond):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.Bank):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Bank):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.Supermarket):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Supermarket):
+            ui.game.feature_not_available()
             #TODO
 
-        elif isinstance(item, board.Restaurant):
-            input("Feature currently not available. Press ENTER to continue.\n")
+        elif isinstance(item, Restaurant):
+            ui.game.feature_not_available()
             #TODO
 
 
-game_board = board.Board()
+game_board = Board()
+ui = ConsoleUI()
 players_list = game_start_routine()
 while True:
     for current_player in players_list:
