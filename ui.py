@@ -27,6 +27,9 @@ class ConsoleUIGame:
     def consider_an_item(self, item):
         print(f"Considering {item.name}...")
 
+    def alright_press_enter_continue(self):
+        input("Alright. Press ENTER to continue.\n")
+
     def won(self, target_player):
         print(f"{target_player.name} WON!!!")
         input("Press ENTER to exit.\n")
@@ -53,9 +56,6 @@ class ConsoleUIProperty:
         print(f"Not enough money to buy {item.name}...")
         input("Press ENTER to continue.\n")
 
-    def player_refuse_buy_property(self):
-        input("Alright. Press ENTER to continue.\n")
-
     def ask_upgrade_property(self, item, player):
         print(f"You own {item.name}.")
         print(f"{item.name} is at level {item.level}.")
@@ -78,9 +78,6 @@ class ConsoleUIProperty:
         print(f"Not enough money to upgrade {item.name}...")
         input("Press ENTER to continue.\n")
 
-    def player_refuse_upgrade_property(self):
-        input("Alright. Press ENTER to continue.\n")
-
     def need_to_pay_rent(self, item, target_player):
         print(f"Oops, {item.name} is owned by {target_player.name}.")
         print(f"You need to pay rent of {item.rent}.")
@@ -100,10 +97,41 @@ class ConsoleUIProperty:
         input("Press ENTER to continue.\n")
 
 
-
-
 class ConsoleUITower:
-    pass
+    def receive_salary(self, player, item):
+        print(f"You received ${player.job.salary} salary as {player.job.title} in {item.name}!")
+        print(f"Your cash: {player.cash}")
+        input("Press ENTER to continue.\n")
+
+    def ask_if_looking_for_jobs(self):
+        choice = input(f"Are you currently looking for jobs? (Y/N): ")
+        return choice
+
+    def show_jobs_wait_application(self, player, item):
+        print(f"Your cash: {player.cash}")
+        i = 1
+        for job in item.jobs:
+            print(f"<PRESS {i} TO APPLY> | {job.title} | Application Cost: {job.application_cost} | Offer Rate: {job.offer_rate * 100}% | Salary: {job.salary}")
+            i += 1
+        print("<PRESS ANY OTHER KEY TO CANCEL>\n")
+        print("Note: If you receive an offer, any previous job will be discarded.")
+        choice = input("Please enter your choice: ")
+        return choice
+
+    def apply_job_failure_money(self, target_job):
+        print(f"Not enough money to apply for {target_job.title}...")
+        input("Press ENTER to continue.\n")
+
+    def apply_job_failure_reject(self):
+        print("Unfortunately, your application is rejected.")
+        input("Press ENTER to continue.\n")
+
+    def apply_job_success(self, player):
+        print("Congratulations! Your application is accepted.")
+        print(f"Your job: {player.job.title}")
+        print(f"Your salary: {player.job.salary}")
+        input("Press ENTER to continue.\n")
+
 
 
 class ConsoleUIChest:

@@ -13,10 +13,18 @@ class Property(Item):
         self.owner_id = owner_id
 
 
+class Job:
+    def __init__(self, title, application_cost, offer_rate, salary):
+        self.title = title
+        self.application_cost = application_cost
+        self.offer_rate = offer_rate
+        self.salary = salary
+
+
 class Tower(Item):
-    def __init__(self, name):
+    def __init__(self, name, jobs):
         super().__init__(name)
-    #TODO
+        self.jobs = jobs
 
 
 class GoodChest(Item):
@@ -97,21 +105,54 @@ class Board:
             "E3": Property(name="Emerald Estates 3", price=500, initial_rent=54, group="E")
         }
         self.towers_dict = {
-            "T1": Tower(name="T1"),
-            "T2": Tower(name="T2"),
-            "T3": Tower(name="T3")
+            "T1": Tower(
+                name="Falafel Tower",
+                jobs=
+                [
+                    Job("Cashier", 120, 0.75, 60),
+                    Job("Freelance Designer", 100, 0.2, 180),
+                    Job("Store Manager", 600, 0.3, 360)
+                ]
+            ),
+            "T2": Tower(
+                name="Lasagna Tower",
+                jobs=
+                [
+                    Job("IT Intern", 180, 0.6, 90),
+                    Job("Software Engineer", 400, 0.35, 250),
+                    Job("Senior Engineer", 800, 0.2, 500)
+                ]
+            ),
+            "T3": Tower(
+                name="Avocado Tower",
+                jobs=
+                [
+                    Job("Bank Clerk", 300, 0.6, 100),
+                    Job("Accountant", 500, 0.25, 360),
+                    Job("Trader", 1000, 0.05, 1000)
+                ]
+            ),
+            "T4": Tower(
+                name="Burrito Tower",
+                jobs=
+                [
+                    Job("Fine Artist", 50, 0.1, 225),
+                    Job("Antique Collector", 700, 0.5, 225),
+                    Job("Politician", 3000, 0.8, 375)
+                ]
+            )
         }
         self.good_chest = GoodChest("Chest")
         self.bad_chest = BadChest("Bad Chest")
         self.hotel = Hotel("Block No.7 Hotel")
         self.park = Park("City Park")
         self.pond = Pond("Mirror Pond")
-        self.bank = Bank("Bank of Avocados")
+        self.bank = Bank("Bank of Avocado")
         self.supermarket = Supermarket("Supermarket")
         self.restaurant = Restaurant("Object Oriented Restaurant")
 
         self.item_list = [
-            [self.towers_dict["T3"], self.hotel],
+            [self.towers_dict["T4"], self.hotel],
             [self.properties_dict["A1"], self.hotel],
             [self.properties_dict["A2"], self.hotel],
             [self.good_chest, self.hotel],
@@ -138,7 +179,7 @@ class Board:
             [self.properties_dict["D3"], self.towers_dict["T2"]],
             [self.towers_dict["T3"]],
             [self.towers_dict["T3"], self.bank],
-            [self.properties_dict["A1"], self.towers_dict["T3"]],
+            [self.properties_dict["A1"], self.towers_dict["T4"]],
         ] # 2D List stating accessible items from a certain position
 
     def check_for_complete_group(self, letter, player):

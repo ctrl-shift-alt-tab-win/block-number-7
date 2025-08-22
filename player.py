@@ -7,6 +7,7 @@ class Player:
         self.name = name
         self.cash = cash_initial
         self.position = 0
+        self.job = None
 
     def move(self):
         steps = random.randint(1, 6)
@@ -40,3 +41,21 @@ class Player:
             self.cash -= target_property.rent
             target_player.cash += target_property.rent
             return True
+
+    def apply_for_job(self, target_job):
+        if self.cash < target_job.application_cost:
+            return -1
+        else:
+            self.cash -= target_job.application_cost
+            if random.random() < target_job.offer_rate:
+                self.job = target_job
+                return 1
+            else:
+                return 0
+
+    def receive_salary_if_applicable(self, target_tower):
+        if self.job in target_tower.jobs:
+            self.cash += self.job.salary
+            return True
+        else:
+            return False

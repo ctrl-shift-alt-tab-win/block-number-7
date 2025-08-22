@@ -23,7 +23,7 @@ def game_handle_property(item, player):
             else:
                 ui.property.buy_property_failure(item)
         else:
-            ui.property.player_refuse_buy_property()
+            ui.game.alright_press_enter_continue()
     elif item.owner_id == player.player_id:
         choice = ui.property.ask_upgrade_property(item, player)
         if choice == "Y":
@@ -35,7 +35,7 @@ def game_handle_property(item, player):
             elif status == -1:
                 ui.property.upgrade_property_failure_money(item)
         else:
-            ui.property.player_refuse_upgrade_property()
+            ui.game.alright_press_enter_continue()
     else:
         target_player = players_list[item.owner_id - 1]
         ui.property.need_to_pay_rent(item, target_player)
@@ -46,6 +46,27 @@ def game_handle_property(item, player):
             ui.game.won(target_player)
             sys.exit()
             # TODO: Generalise to more than 2 players
+
+
+def game_handle_tower(item, player):
+    if player.receive_salary_if_applicable(item):
+        ui.tower.receive_salary(player, item)
+    choice = ui.tower.ask_if_looking_for_jobs()
+    if choice == "Y":
+        choice_number = ui.tower.show_jobs_wait_application(player, item)
+        if choice_number in ["1", "2", "3"]:
+            target_job = item.jobs[int(choice_number) - 1]
+            status = player.apply_for_job(target_job)
+            if status == -1:
+                ui.tower.apply_job_failure_money(target_job)
+            elif status == 0:
+                ui.tower.apply_job_failure_reject()
+            elif status == 1:
+                ui.tower.apply_job_success(player)
+        else:
+            ui.game.alright_press_enter_continue()
+    else:
+        ui.game.alright_press_enter_continue()
 
 
 def game_step(player):
@@ -59,8 +80,7 @@ def game_step(player):
         if isinstance(item, Property):
             game_handle_property(item, player)
         elif isinstance(item, Tower):
-            ui.game.feature_not_available()
-            #TODO
+            game_handle_tower(item, player)
         elif isinstance(item, GoodChest):
             ui.game.feature_not_available()
             #TODO
