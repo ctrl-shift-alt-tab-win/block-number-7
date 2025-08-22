@@ -8,6 +8,8 @@ class Player:
         self.cash = cash_initial
         self.position = 0
         self.job = None
+        self.luck = 0
+        self.backpack = []
 
     def move(self):
         steps = random.randint(1, 6)

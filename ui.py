@@ -8,7 +8,7 @@ class ConsoleUIGame:
         return player1_name, player2_name
 
     def turn_start_roll_dice(self, player):
-        print(f"-------{player.name}'s turn-------")
+        print(f"--------------{player.name}'s turn--------------")
         print(f"Your cash: {player.cash}")
         print(f"You are at position {player.position}.")
         input("Press ENTER to roll the dice!\n")
@@ -135,7 +135,26 @@ class ConsoleUITower:
 
 
 class ConsoleUIChest:
-    pass
+    def show_distribution_wait_draw_card(self):
+        print("""
+            |||||||||||||||||||||||||
+            ||| BASE DISTRIBUTION |||
+            |||                   |||
+            ||| Legendary --- 1%  |||
+            ||| Epic -------- 4%  |||
+            ||| Rare -------- 10% |||
+            ||| Uncommon ---- 25% |||
+            ||| Common ------ 60% |||
+            |||||||||||||||||||||||||
+        """)
+        input("Press ENTER to draw a card from the chest!\n")
+
+    def display_card(self, rarity, card):
+        print(f"<<< ({rarity}) {card} >>>")
+
+    def reward_claimed(self):
+        print("Reward claimed!")
+        input("Press ENTER to continue.\n")
 
 
 class ConsoleUIHotel:

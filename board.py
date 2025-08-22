@@ -1,3 +1,7 @@
+import random
+from itertools import accumulate
+
+
 class Item:
     def __init__(self, name):
         self.name = name
@@ -30,12 +34,83 @@ class Tower(Item):
 class GoodChest(Item):
     def __init__(self, name):
         super().__init__(name)
-    #TODO
-    # 1% Legendary
-    # 4% Epic
-    # 10% Rare
-    # 25% Uncommon
-    # 60% Common
+        self.base_rarity_distribution = [0.01, 0.04, 0.10, 0.25, 0.60]
+        self.best_rarity_distribution = [0.05, 0.10, 0.20, 0.30, 0.35]
+        self.rarity_dict = {0:"Legendary", 1:"Epic", 2:"Rare", 3:"Uncommon", 4:"Common"}
+        self.cards = [
+            ["Cash x1.5", "Every Owned Property Rent x1.5"],
+            ["Cash +400", "Steal 7% From Every Other Player", "Every Owned Property Rent x1.1"],
+            ["Cash +150", "Luck +20", "Steal 2% From Every Other Player", "Standard Fishing Rod"],
+            ["Cash +70", "Cash +50", "Cash x1.02", "Steal 1% From Every Other Player"],
+            ["Cash +20", "Cash +10", "Luck +2"]
+        ]
+
+    def get_current_rarity_distribution(self, luck):
+        l = luck / 100
+        current_rarity_distribution = []
+        for i in range(5):
+            current_rarity_distribution.append( (1-l) * self.base_rarity_distribution[i] + l * self.best_rarity_distribution[i] )
+        return current_rarity_distribution
+
+    def draw_card(self, player):
+        current_rarity_distribution = self.get_current_rarity_distribution(player.luck)
+        boundaries = list(accumulate(current_rarity_distribution))
+        r = random.random()
+        for i in range(5):
+            if r < boundaries[i]:
+                return self.rarity_dict[i], random.choice(self.cards[i])
+        return None
+
+    def given_card_take_action(self, card, player, players_list, board):
+        if card == "Cash x1.5":
+            player.cash = int(player.cash * 1.5)
+        elif card == "Every Owned Property Rent x1.5":
+            for p in board.properties_dict.values():
+                if p.owner_id == player.player_id:
+                    p.rent = int(p.rent * 1.5)
+        elif card == "Cash +400":
+            player.cash += 400
+        elif card == "Steal 7% From Every Other Player":
+            for p in players_list:
+                if p != player:
+                    amount = int(p.cash * 0.07)
+                    p.cash -= amount
+                    player.cash += amount
+        elif card == "Every Owned Property Rent x1.1":
+            for p in board.properties_dict.values():
+                if p.owner_id == player.player_id:
+                    p.rent = int(p.rent * 1.1)
+        elif card == "Cash +150":
+            player.cash += 150
+        elif card == "Luck +20":
+            player.luck = min(player.luck+20, 100)
+        elif card == "Steal 2% From Every Other Player":
+            for p in players_list:
+                if p != player:
+                    amount = int(p.cash * 0.02)
+                    p.cash -= amount
+                    player.cash += amount
+        elif card == "Standard Fishing Rod":
+            player.backpack.append("Standard Fishing Rod")
+            #TODO
+        elif card == "Cash +70":
+            player.cash += 70
+        elif card == "Cash +50":
+            player.cash += 50
+        elif card == "Cash x1.02":
+            player.cash = int(player.cash * 1.02)
+        elif card == "Steal 1% From Every Other Player":
+            for p in players_list:
+                if p != player:
+                    amount = int(p.cash * 0.01)
+                    p.cash -= amount
+                    player.cash += amount
+        elif card == "Cash +20":
+            player.cash += 20
+        elif card == "Cash +10":
+            player.cash += 10
+        elif card == "Luck +2":
+            player.luck = min(player.luck+2, 100)
 
 
 class BadChest(Item):
