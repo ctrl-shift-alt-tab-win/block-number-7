@@ -31,32 +31,26 @@ class Tower(Item):
         self.jobs = jobs
 
 
-class GoodChest(Item):
-    def __init__(self, name):
+class Chest(Item):
+    def __init__(self, name, base_dist, best_dist, rarity_dict, cards):
         super().__init__(name)
-        self.base_rarity_distribution = [0.01, 0.04, 0.10, 0.25, 0.60]
-        self.best_rarity_distribution = [0.05, 0.10, 0.20, 0.30, 0.35]
-        self.rarity_dict = {0:"Legendary", 1:"Epic", 2:"Rare", 3:"Uncommon", 4:"Common"}
-        self.cards = [
-            ["Cash x1.5", "Every Owned Property Rent x1.5"],
-            ["Cash +400", "Steal 7% From Every Other Player", "Every Owned Property Rent x1.1"],
-            ["Cash +150", "Luck +20", "Steal 2% From Every Other Player", "Standard Fishing Rod"],
-            ["Cash +70", "Cash +50", "Cash x1.02", "Steal 1% From Every Other Player"],
-            ["Cash +20", "Cash +10", "Luck +2"]
-        ]
+        self.base_dist = base_dist
+        self.best_dist = best_dist
+        self.rarity_dict = rarity_dict
+        self.cards = cards
 
     def get_current_rarity_distribution(self, luck):
         l = luck / 100
-        current_rarity_distribution = []
-        for i in range(5):
-            current_rarity_distribution.append( (1-l) * self.base_rarity_distribution[i] + l * self.best_rarity_distribution[i] )
-        return current_rarity_distribution
+        return [
+            (1 - l) * base + l * best
+            for base, best in zip(self.base_dist, self.best_dist)
+        ]
 
     def draw_card(self, player):
-        current_rarity_distribution = self.get_current_rarity_distribution(player.luck)
-        boundaries = list(accumulate(current_rarity_distribution))
+        distribution = self.get_current_rarity_distribution(player.luck)
+        boundaries = list(accumulate(distribution))
         r = random.random()
-        for i in range(5):
+        for i in range(len(boundaries)):
             if r < boundaries[i]:
                 return self.rarity_dict[i], random.choice(self.cards[i])
         return None
@@ -111,17 +105,62 @@ class GoodChest(Item):
             player.cash += 10
         elif card == "Luck +2":
             player.luck = min(player.luck+2, 100)
+        elif card == "Cash -50%":
+            player.cash = int(player.cash * 0.5)
+        elif card == "Every Owned Property Rent -33%":
+            for p in board.properties_dict.values():
+                if p.owner_id == player.player_id:
+                    p.rent = int(p.rent * 0.67)
+        elif card == "Reset Luck to 0":
+            player.luck = 0
+        elif card == "Clear Backpack":
+            player.backpack = []
+        elif card == "Cash -10%":
+            player.cash = int(player.cash * 0.9)
+        elif card == "Luck -50%":
+            player.luck = int(player.luck * 0.5)
+        elif card == "Cash -5%":
+            player.cash = int(player.cash * 0.95)
+        elif card == "Cash -4%":
+            player.cash = int(player.cash * 0.96)
+        elif card == "Cash -1%":
+            player.cash = int(player.cash * 0.99)
+        elif card == "Luck -5%":
+            player.luck = int(player.luck * 0.95)
 
 
-class BadChest(Item):
+class GoodChest(Chest):
     def __init__(self, name):
-        super().__init__(name)
-    #TODO
-    # 1% Legendarily Awful
-    # 4% Epically Awful
-    # 10% Rarely Awful
-    # 25% Uncommonly Awful
-    # 60% Commonly Awful
+        super().__init__(
+            name,
+            base_dist = [0.01, 0.04, 0.10, 0.25, 0.60],
+            best_dist = [0.05, 0.10, 0.20, 0.30, 0.35],
+            rarity_dict = {0:"Legendary", 1:"Epic", 2:"Rare", 3:"Uncommon", 4:"Common"},
+            cards = [
+                ["Cash x1.5", "Every Owned Property Rent x1.5"],
+                ["Cash +400", "Steal 7% From Every Other Player", "Every Owned Property Rent x1.1"],
+                ["Cash +150", "Luck +20", "Steal 2% From Every Other Player", "Standard Fishing Rod"],
+                ["Cash +70", "Cash +50", "Cash x1.02", "Steal 1% From Every Other Player"],
+                ["Cash +20", "Cash +10", "Luck +2"]
+            ]
+        )
+
+
+class BadChest(Chest):
+    def __init__(self, name):
+        super().__init__(
+            name,
+            base_dist = [0.01, 0.04, 0.10, 0.25, 0.60],
+            best_dist = [0.002, 0.008, 0.04, 0.25, 0.70],
+            rarity_dict = {0: "Awful++", 1: "Awful+", 2: "Awful", 3: "Mild", 4: "Minor"},
+            cards = [
+                ["Cash -50%", "Every Owned Property Rent -33%"],
+                ["Reset Luck to 0", "Clear Backpack"],
+                ["Cash -10%", "Luck -50%"],
+                ["Cash -5%", "Cash -4%"],
+                ["Cash -1%", "Luck -5%"]
+            ]
+        )
 
 
 class Hotel(Item):
@@ -211,7 +250,7 @@ class Board:
                 name="Burrito Tower",
                 jobs=
                 [
-                    Job("Fine Artist", 50, 0.1, 225),
+                    Job("Fine Artist", 50, 0.1, 140),
                     Job("Antique Collector", 700, 0.5, 225),
                     Job("Politician", 3000, 0.8, 375)
                 ]
@@ -234,20 +273,20 @@ class Board:
             [self.pond],
             [self.properties_dict["A3"]],
             [self.properties_dict["B1"]],
-            [self.bad_chest],
+            [self.good_chest],
             [self.properties_dict["B1"]],
             [self.properties_dict["B2"]],
             [self.park],
             [self.properties_dict["C1"]],
             [self.properties_dict["C2"]],
             [self.supermarket],
-            [self.good_chest, self.good_chest],
+            [self.bad_chest, self.bad_chest],
             [self.supermarket],
             [self.properties_dict["C3"]],
             [self.properties_dict["C4"]],
             [self.restaurant],
-            [],
-            [self.properties_dict["D1"]],
+            [self.good_chest],
+            [self.properties_dict["D1"], self.bad_chest],
             [self.towers_dict["T1"], self.good_chest],
             [self.properties_dict["D1"], self.towers_dict["T1"]],
             [self.properties_dict["D2"], self.towers_dict["T2"]],

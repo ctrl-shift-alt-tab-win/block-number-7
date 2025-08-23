@@ -69,12 +69,12 @@ def game_handle_tower(item, player):
         ui.game.alright_press_enter_continue()
 
 
-def game_handle_good_chest(item, player):
-    ui.chest.show_distribution_wait_draw_card()
+def game_handle_chest(chest_type, item, player):
+    ui.chest.show_distribution_wait_draw_card(chest_type)
     rarity, card = item.draw_card(player)
     ui.chest.display_card(rarity, card)
     item.given_card_take_action(card, player, players_list, game_board)
-    ui.chest.reward_claimed()
+    ui.chest.effect_claimed(chest_type)
 
 
 def game_step(player):
@@ -90,10 +90,9 @@ def game_step(player):
         elif isinstance(item, Tower):
             game_handle_tower(item, player)
         elif isinstance(item, GoodChest):
-            game_handle_good_chest(item, player)
+            game_handle_chest("good", item, player)
         elif isinstance(item, BadChest):
-            ui.game.feature_not_available()
-            #TODO
+            game_handle_chest("bad", item, player)
         elif isinstance(item, Hotel):
             ui.game.feature_not_available()
             #TODO

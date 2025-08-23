@@ -1,3 +1,4 @@
+# noinspection PyMethodMayBeStatic
 class ConsoleUIGame:
     def welcome(self):
         print("Welcome!")
@@ -38,6 +39,7 @@ class ConsoleUIGame:
         input("Feature currently not available. Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIProperty:
     def ask_buy_property(self, item, player):
         print(f"No one owns {item.name}.")
@@ -97,6 +99,7 @@ class ConsoleUIProperty:
         input("Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUITower:
     def receive_salary(self, player, item):
         print(f"You received ${player.job.salary} salary as {player.job.title} in {item.name}!")
@@ -133,10 +136,11 @@ class ConsoleUITower:
         input("Press ENTER to continue.\n")
 
 
-
+# noinspection PyMethodMayBeStatic
 class ConsoleUIChest:
-    def show_distribution_wait_draw_card(self):
-        print("""
+    def show_distribution_wait_draw_card(self, chest_type):
+        if chest_type == "good":
+            print("""
             |||||||||||||||||||||||||
             ||| BASE DISTRIBUTION |||
             |||                   |||
@@ -146,14 +150,29 @@ class ConsoleUIChest:
             ||| Uncommon ---- 25% |||
             ||| Common ------ 60% |||
             |||||||||||||||||||||||||
-        """)
+            """)
+        elif chest_type == "bad":
+            print("""
+            |||||||||||||||||||||||||
+            ||| BASE DISTRIBUTION |||
+            |||                   |||
+            ||| Awful++ ----- 1%  |||
+            ||| Awful+ ------ 4%  |||
+            ||| Awful ------- 10% |||
+            ||| Mild -------- 25% |||
+            ||| Minor ------- 60% |||
+            |||||||||||||||||||||||||
+            """)
         input("Press ENTER to draw a card from the chest!\n")
 
     def display_card(self, rarity, card):
         print(f"<<< ({rarity}) {card} >>>")
 
-    def reward_claimed(self):
-        print("Reward claimed!")
+    def effect_claimed(self, chest_type):
+        if chest_type == "good":
+            print("Reward claimed!")
+        elif chest_type == "bad":
+            print("Punishment claimed.")
         input("Press ENTER to continue.\n")
 
 
