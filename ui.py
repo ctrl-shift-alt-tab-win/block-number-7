@@ -114,7 +114,7 @@ class ConsoleUITower:
         print(f"Your cash: {player.cash}")
         i = 1
         for job in item.jobs:
-            print(f"<PRESS {i} TO APPLY> | {job.title} | Application Cost: {job.application_cost} | Offer Rate: {job.offer_rate * 100}% | Salary: {job.salary}")
+            print(f"<PRESS {i} TO APPLY> | {job.title} | Application Cost: {job.application_cost} | Base Offer Rate: {job.offer_rate * 100}% | Salary: {job.salary}")
             i += 1
         print("<PRESS ANY OTHER KEY TO CANCEL>\n")
         print("Note: If you receive an offer, any previous job will be discarded.")

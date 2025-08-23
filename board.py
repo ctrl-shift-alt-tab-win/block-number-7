@@ -266,34 +266,39 @@ class Board:
         self.restaurant = Restaurant("Object Oriented Restaurant")
 
         self.item_list = [
-            [self.towers_dict["T4"], self.hotel],
-            [self.properties_dict["A1"], self.hotel],
-            [self.properties_dict["A2"], self.hotel],
-            [self.good_chest, self.hotel],
-            [self.pond],
-            [self.properties_dict["A3"]],
-            [self.properties_dict["B1"]],
-            [self.good_chest],
-            [self.properties_dict["B1"]],
-            [self.properties_dict["B2"]],
-            [self.park],
-            [self.properties_dict["C1"]],
-            [self.properties_dict["C2"]],
-            [self.supermarket],
-            [self.bad_chest, self.bad_chest],
-            [self.supermarket],
-            [self.properties_dict["C3"]],
-            [self.properties_dict["C4"]],
-            [self.restaurant],
-            [self.good_chest],
-            [self.properties_dict["D1"], self.bad_chest],
-            [self.towers_dict["T1"], self.good_chest],
-            [self.properties_dict["D1"], self.towers_dict["T1"]],
-            [self.properties_dict["D2"], self.towers_dict["T2"]],
-            [self.properties_dict["D3"], self.towers_dict["T2"]],
-            [self.towers_dict["T3"]],
-            [self.towers_dict["T3"], self.bank],
-            [self.properties_dict["A1"], self.towers_dict["T4"]],
+            [self.towers_dict["T4"], self.hotel],                       #0
+            [self.properties_dict["A1"], self.hotel],                   #1
+            [self.properties_dict["A2"], self.hotel],                   #2
+            [self.good_chest, self.hotel],                              #3
+            [self.pond],                                                #4
+            [self.properties_dict["A3"]],                               #5
+            [self.properties_dict["B1"]],                               #6
+            [self.good_chest, self.good_chest],                         #7
+            [self.properties_dict["B1"]],                               #8
+            [self.properties_dict["B2"]],                               #9
+            [self.park],                                                #10
+            [self.properties_dict["C1"]],                               #11
+            [self.properties_dict["C2"]],                               #12
+            [self.supermarket],                                         #13
+            [self.bad_chest, self.bad_chest],                           #14
+            [self.supermarket],                                         #15
+            [self.properties_dict["C3"]],                               #16
+            [self.properties_dict["C4"]],                               #17
+            [self.restaurant],                                          #18
+            [self.good_chest],                                          #19
+            [self.properties_dict["D1"], self.bad_chest],               #20
+            [self.towers_dict["T1"], self.good_chest],                  #21
+            [self.properties_dict["D1"], self.towers_dict["T1"]],       #22
+            [self.properties_dict["D2"], self.towers_dict["T2"]],       #23
+            [self.properties_dict["D3"], self.towers_dict["T2"]],       #24
+            [self.towers_dict["T3"]],                                   #25
+            [self.towers_dict["T3"], self.bank],                        #26
+            [self.properties_dict["A1"], self.towers_dict["T4"]],       #27
+            [self.properties_dict["D1"], self.restaurant],              #28
+            [self.properties_dict["D2"], self.properties_dict["E1"]],   #29
+            [self.properties_dict["D3"], self.properties_dict["E2"]],   #30
+            [self.properties_dict["E3"]],                               #31
+            [self.properties_dict["D3"], self.bank]                     #32
         ] # 2D List stating accessible items from a certain position
 
     def check_for_complete_group(self, letter, player):

@@ -13,7 +13,19 @@ class Player:
 
     def move(self):
         steps = random.randint(1, 6)
-        self.position = (self.position + steps) % 28
+        if self.position == 19 and steps != 6:
+            #Will land inside branch road
+            self.position += steps + 8 #Involves jumping from grid 19 to 28
+        elif self.position in [28,29,30,31,32]:
+            #Start inside branch road
+            if self.position + steps >= 33:
+                #Will exit branch road
+                self.position = (self.position + steps - 8) % 28 #Involves jumping from grid 32 to 25
+            else:
+                #Will stay inside branch road
+                self.position += steps
+        else:
+            self.position = (self.position + steps) % 28
         return steps, self.position
 
     def buy_property(self, target_property):
