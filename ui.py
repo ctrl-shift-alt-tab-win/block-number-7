@@ -176,23 +176,43 @@ class ConsoleUIChest:
         input("Press ENTER to continue.\n")
 
 
-class ConsoleUIHotel:
-    pass
-
-
 class ConsoleUIPark:
     pass
 
 
 class ConsoleUIPond:
-    pass
+    def show_fishing_rods_wait_choice(self, fishing_rods_in_backpack):
+        print("Your fishing rods: ")
+        i = 1
+        for fishing_rod in fishing_rods_in_backpack:
+            print(f"<PRESS {i} TO USE THIS FISHING ROD> | {fishing_rod.name} | Health Remaining: {fishing_rod.health}")
+            i += 1
+        print("<PRESS ANY OTHER KEY TO CANCEL>\n")
+        choice_number = input("Please enter your choice: ")
+        return choice_number, (i-1)
+
+    def show_fish_caught(self, name, description, price):
+        print(f"You caught something... ")
+        input("Press ENTER to reveal!\n")
+        print(f"*** {name} ***")
+        print(f"\"{description}\"")
+        print(f"Can be sold for: ${price}\n")
+        input("Press ENTER to continue.\n")
+
+    def catch_nothing(self):
+        print("You didn't catch anything...")
+        input("Press ENTER to continue.\n")
+
+    def no_fishing_rod(self):
+        print("You don't have any fishing rod.")
+        input("Press ENTER to continue.\n")
 
 
 class ConsoleUIBank:
     pass
 
 
-class ConsoleUISupermarket:
+class ConsoleUIMarket:
     pass
 
 
@@ -211,9 +231,8 @@ class ConsoleUI:
         self.property = ConsoleUIProperty()
         self.tower = ConsoleUITower()
         self.chest = ConsoleUIChest()
-        self.hotel = ConsoleUIHotel()
         self.park = ConsoleUIPark()
         self.pond = ConsoleUIPond()
         self.bank = ConsoleUIBank()
-        self.supermarket = ConsoleUISupermarket()
+        self.market = ConsoleUIMarket()
         self.restaurant = ConsoleUIRestaurant()

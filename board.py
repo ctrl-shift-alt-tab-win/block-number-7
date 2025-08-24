@@ -163,22 +163,75 @@ class BadChest(Chest):
         )
 
 
-class Hotel(Item):
-    def __init__(self, name):
-        super().__init__(name)
-    #TODO
-
-
 class Park(Item):
     def __init__(self, name):
         super().__init__(name)
     #TODO
 
 
+class FishForSale:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+
+class FishingRod:
+    def __init__(self, name, level, health):
+        self.name = name
+        self.level = level
+        self.health = health
+
+
+class PondObject:
+    def __init__(self, name, requirement, price_min, price_max, frequency, description):
+        self.name = name
+        self.requirement = requirement
+        self.price_min = price_min
+        self.price_max = price_max
+        self.frequency = frequency
+        self.description = description
+
+
 class Pond(Item):
     def __init__(self, name):
         super().__init__(name)
-    #TODO
+        self.pond_object_list = [
+            PondObject("Silver Minnow", 1, 1, 5, 50, "Tiny schooling fish, shiny scales."),
+            PondObject("Spotted Pond Perch", 1, 10, 20, 50, "Small freshwater fish with green spots."),
+            PondObject("Bluegill Sunfish", 1, 10, 30, 50, "Round, flat, and very common near ponds."),
+            PondObject("River Catfish", 1, 10, 90, 30, "Whiskered bottom-dweller, always hungry."),
+            PondObject("Rusty Crab", 1, 5, 10, 20, "Tiny, aggressive claws, easy to net."),
+            PondObject("Glass Carp", 2, 5, 65, 80, "Nearly transparent body, eerie but beautiful."),
+            PondObject("Speckled Tilapia", 2, 25, 35, 60, "Hardy farmed fish, mild taste."),
+            PondObject("Spotted River Eel", 2, 40, 80, 40, "Slimy, slippery, wriggles out of nets."),
+            PondObject("Red Claw Crayfish", 2, 15, 45, 40, "Small lobster-like creature, tasty claws."),
+            PondObject("Painted Goby", 2, 15, 25, 20, "Tiny but brightly colored, like a rainbow."),
+            PondObject("Dusky Pufferfish", 2, 40, 60, 20, "Inflates when startled, silly face."),
+            PondObject("Rainbow Koi", 3, 40, 50, 100, "Decorative carp, shimmering patterns."),
+            PondObject("Steelhead Salmon", 3, 100, 150, 50, "Muscular salmon, hard to reel in."),
+            PondObject("Rock Lobster", 3, 50, 70, 40, "Large spiny lobster, strong shell."),
+            PondObject("Electric Catfish", 3, 20, 40, 20, "Delivers mild shocks when handled."),
+            PondObject("Velvet Stingray", 3, 120, 180, 10, "Flat, smooth body, hides in silt."),
+            PondObject("Black Pike", 3, 100, 140, 5, "Long predator fish, sharp teeth."),
+            PondObject("Orchid Betta", 4, 160, 170, 20, "Are you actually reading these descriptions?"),
+            PondObject("River Otter", 4, 180, 240, 10, "It keeps stealing my bait."),
+            PondObject("Great White Shark", 4, 200, 400, 10, "It's a relief that it was only going for my bait."),
+            PondObject("Blue Whale", 4, 1000, 2000, 1, "I never knew this thing fits inside a pond.")
+        ]
+
+    def get_random_fish(self, player, fishing_rod):
+        p = 0.5 + (player.luck / 200)
+        fishing_rod.health -= 1
+        if fishing_rod.health <= 0:
+            player.backpack.remove(fishing_rod)
+        if random.random() < p:
+            objects = [x for x in self.pond_object_list if x.requirement <= fishing_rod.level]
+            weights = [y.frequency for y in objects]
+            fish = random.choices(population=objects, weights=weights, k=1)[0]
+            price = random.randint(fish.price_min, fish.price_max)
+            return fish.name, fish.description, price
+        else:
+            return None
 
 
 class Bank(Item):
@@ -187,7 +240,7 @@ class Bank(Item):
     #TODO
 
 
-class Supermarket(Item):
+class Market(Item):
     def __init__(self, name):
         super().__init__(name)
     #TODO
@@ -258,18 +311,17 @@ class Board:
         }
         self.good_chest = GoodChest("Chest")
         self.bad_chest = BadChest("Bad Chest")
-        self.hotel = Hotel("Block No.7 Hotel")
         self.park = Park("City Park")
-        self.pond = Pond("Mirror Pond")
+        self.pond = Pond("Object Oriented Pond")
         self.bank = Bank("Bank of Avocado")
-        self.supermarket = Supermarket("Supermarket")
+        self.market = Market("Block No.7 Market")
         self.restaurant = Restaurant("Object Oriented Restaurant")
 
         self.item_list = [
-            [self.towers_dict["T4"], self.hotel],                       #0
-            [self.properties_dict["A1"], self.hotel],                   #1
-            [self.properties_dict["A2"], self.hotel],                   #2
-            [self.good_chest, self.hotel],                              #3
+            [self.towers_dict["T4"], self.good_chest],                  #0
+            [self.properties_dict["A1"], self.bad_chest],               #1
+            [self.properties_dict["A2"], self.good_chest],              #2
+            [self.pond],                                                #3
             [self.pond],                                                #4
             [self.properties_dict["A3"]],                               #5
             [self.properties_dict["B1"]],                               #6
@@ -279,15 +331,15 @@ class Board:
             [self.park],                                                #10
             [self.properties_dict["C1"]],                               #11
             [self.properties_dict["C2"]],                               #12
-            [self.supermarket],                                         #13
+            [self.market],                                              #13
             [self.bad_chest, self.bad_chest],                           #14
-            [self.supermarket],                                         #15
+            [self.market],                                              #15
             [self.properties_dict["C3"]],                               #16
             [self.properties_dict["C4"]],                               #17
             [self.restaurant],                                          #18
-            [self.good_chest],                                          #19
-            [self.properties_dict["D1"], self.bad_chest],               #20
-            [self.towers_dict["T1"], self.good_chest],                  #21
+            [self.bad_chest],                                           #19
+            [self.properties_dict["D1"], self.good_chest],              #20
+            [self.towers_dict["T1"], self.bad_chest],                   #21
             [self.properties_dict["D1"], self.towers_dict["T1"]],       #22
             [self.properties_dict["D2"], self.towers_dict["T2"]],       #23
             [self.properties_dict["D3"], self.towers_dict["T2"]],       #24

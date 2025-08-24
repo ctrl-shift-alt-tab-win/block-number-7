@@ -77,6 +77,25 @@ def game_handle_chest(chest_type, item, player):
     ui.chest.effect_claimed(chest_type)
 
 
+def game_handle_pond(item, player):
+    fishing_rods_in_backpack = [x for x in player.backpack if isinstance(x, FishingRod)]
+    if len(fishing_rods_in_backpack) > 0:
+        choice_number, bound = ui.pond.show_fishing_rods_wait_choice(fishing_rods_in_backpack)
+        if choice_number.isdigit() and 1 <= int(choice_number) <= bound:
+            fishing_rod = fishing_rods_in_backpack[int(choice_number) - 1]
+            result = item.get_random_fish(player, fishing_rod)
+            if result is not None:
+                name, description, price = result
+                player.backpack.append(FishForSale(name, price))
+                ui.pond.show_fish_caught(name, description, price)
+            else:
+                ui.pond.catch_nothing()
+        else:
+            ui.game.alright_press_enter_continue()
+    else:
+        ui.pond.no_fishing_rod()
+
+
 def game_step(player):
     ui.game.turn_start_roll_dice(player)
     steps, position = player.move()
@@ -93,19 +112,15 @@ def game_step(player):
             game_handle_chest("good", item, player)
         elif isinstance(item, BadChest):
             game_handle_chest("bad", item, player)
-        elif isinstance(item, Hotel):
-            ui.game.feature_not_available()
-            #TODO
         elif isinstance(item, Park):
             ui.game.feature_not_available()
             #TODO
         elif isinstance(item, Pond):
-            ui.game.feature_not_available()
-            #TODO
+            game_handle_pond(item, player)
         elif isinstance(item, Bank):
             ui.game.feature_not_available()
             #TODO
-        elif isinstance(item, Supermarket):
+        elif isinstance(item, Market):
             ui.game.feature_not_available()
             #TODO
         elif isinstance(item, Restaurant):
