@@ -61,7 +61,9 @@ class Player:
             return -1
         else:
             self.cash -= target_job.application_cost
-            if random.random() < target_job.offer_rate:
+            l = self.luck / 100
+            offer_rate = target_job.offer_rate * (1-l) + target_job.best_offer_rate * l
+            if random.random() < offer_rate:
                 self.job = target_job
                 return 1
             else:

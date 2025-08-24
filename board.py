@@ -18,10 +18,11 @@ class Property(Item):
 
 
 class Job:
-    def __init__(self, title, application_cost, offer_rate, salary):
+    def __init__(self, title, application_cost, offer_rate, best_offer_rate, salary):
         self.title = title
         self.application_cost = application_cost
         self.offer_rate = offer_rate
+        self.best_offer_rate = best_offer_rate
         self.salary = salary
 
 
@@ -293,36 +294,36 @@ class Board:
                 name="Falafel Tower",
                 jobs=
                 [
-                    Job("Cashier", 120, 0.75, 60),
-                    Job("Freelance Designer", 100, 0.2, 180),
-                    Job("Store Manager", 600, 0.3, 360)
+                    Job("Cashier", 120, 0.75, 0.9, 60),
+                    Job("Freelance Designer", 100, 0.2, 0.25,180),
+                    Job("Store Manager", 600, 0.3, 0.4,360)
                 ]
             ),
             "T2": Tower(
                 name="Lasagna Tower",
                 jobs=
                 [
-                    Job("IT Intern", 180, 0.6, 90),
-                    Job("Software Engineer", 400, 0.35, 250),
-                    Job("Senior Engineer", 800, 0.2, 500)
+                    Job("IT Intern", 180, 0.6, 0.8, 90),
+                    Job("Software Engineer", 400, 0.35, 0.45, 250),
+                    Job("Senior Engineer", 800, 0.2, 0.3, 500)
                 ]
             ),
             "T3": Tower(
                 name="Avocado Tower",
                 jobs=
                 [
-                    Job("Bank Clerk", 300, 0.6, 100),
-                    Job("Accountant", 500, 0.25, 360),
-                    Job("Trader", 1000, 0.05, 1000)
+                    Job("Bank Clerk", 300, 0.6, 0.75, 100),
+                    Job("Accountant", 500, 0.25, 0.3, 360),
+                    Job("Trader", 1000, 0.05, 0.07, 1000)
                 ]
             ),
             "T4": Tower(
                 name="Burrito Tower",
                 jobs=
                 [
-                    Job("Fine Artist", 50, 0.1, 140),
-                    Job("Antique Collector", 700, 0.5, 225),
-                    Job("Politician", 3000, 0.8, 375)
+                    Job("Fine Artist", 50, 0.1, 0.12, 140),
+                    Job("Antique Collector", 700, 0.5, 0.6, 225),
+                    Job("Politician", 3000, 0.8, 0.95, 375)
                 ]
             )
         }
