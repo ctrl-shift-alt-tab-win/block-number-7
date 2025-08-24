@@ -217,12 +217,29 @@ class ConsoleUIMarket:
 
 
 class ConsoleUIRestaurant:
-    pass
+    def show_menu_wait_choice(self, player):
+        print("<<< MENU >>>")
+        print("<PRESS 1 TO SELECT> | Chicken Tikka Masala | $69  | 70% Chance to Gain 20 Luck")
+        print("<PRESS 2 TO SELECT> | Spaghetti Bolognese  | $119 | 60% Chance to Gain 40 Luck")
+        print("<PRESS 3 TO SELECT> | Pepperoni Pasta Bake | $149 | 50% Chance to Gain 60 Luck")
+        print("<PRESS 4 TO SELECT> | Special Fried Rice   | $99  | 20% Chance to Gain 100 Luck")
+        print("<PRESS 5 TO SELECT> | Sparkling Water      | $99  | Set Luck to a Random Value Between 0 and 50")
+        print("<PRESS ANY OTHER KEY TO CANCEL>\n")
+        print(f"Your current luck: {player.luck}")
+        choice_number = input("Please enter your choice: ")
+        return choice_number
 
+    def buy_food_success_gain_luck(self, player):
+        print(f"Success! Your luck is now {player.luck}.")
+        input("Press ENTER to continue.\n")
 
+    def buy_food_success_not_gain_luck(self):
+        print("Sadly, there's no changes to your luck...")
+        input("Press ENTER to continue.\n")
 
-
-
+    def buy_food_failure_money(self):
+        print(f"Not enough money to buy this food.")
+        input("Press ENTER to continue.\n")
 
 
 class ConsoleUI:

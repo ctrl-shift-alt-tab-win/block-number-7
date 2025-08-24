@@ -96,6 +96,20 @@ def game_handle_pond(item, player):
         ui.pond.no_fishing_rod()
 
 
+def game_handle_restaurant(item, player):
+    choice_number = ui.restaurant.show_menu_wait_choice(player)
+    if choice_number in ["1", "2", "3", "4", "5"]:
+        status = item.buy_food(int(choice_number), player)
+        if status == 1:
+            ui.restaurant.buy_food_success_gain_luck(player)
+        elif status == 0:
+            ui.restaurant.buy_food_success_not_gain_luck()
+        elif status == -1:
+            ui.restaurant.buy_food_failure_money()
+    else:
+        ui.game.alright_press_enter_continue()
+
+
 def game_step(player):
     ui.game.turn_start_roll_dice(player)
     steps, position = player.move()
@@ -124,8 +138,7 @@ def game_step(player):
             ui.game.feature_not_available()
             #TODO
         elif isinstance(item, Restaurant):
-            ui.game.feature_not_available()
-            #TODO
+            game_handle_restaurant(item, player)
 
 game_board = Board()
 ui = ConsoleUI()

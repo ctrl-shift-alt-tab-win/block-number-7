@@ -85,8 +85,7 @@ class Chest(Item):
                     p.cash -= amount
                     player.cash += amount
         elif card == "Standard Fishing Rod":
-            player.backpack.append("Standard Fishing Rod")
-            #TODO
+            player.backpack.append(FishingRod("Standard Fishing Rod", 2, 7))
         elif card == "Cash +70":
             player.cash += 70
         elif card == "Cash +50":
@@ -249,7 +248,25 @@ class Market(Item):
 class Restaurant(Item):
     def __init__(self, name):
         super().__init__(name)
-    #TODO
+        self.food_names = ["Chicken Tikka Masala", "Spaghetti Bolognese", "Pepperoni Pasta Bake", "Special Fried Rice", "Sparkling Water"]
+        self.food_prices = [69, 119, 149, 99, 99]
+        self.food_chances = [0.7, 0.6, 0.5, 0.2, 1]
+        self.food_luck_gains = [20, 40, 60, 100, None]
+
+    def buy_food(self, option, player):
+        price = self.food_prices[option-1]
+        if player.cash < price:
+            return -1
+        else:
+            player.cash -= price
+            if random.random() < self.food_chances[option-1]:
+                if option == 5:
+                    player.luck = random.randint(0, 50)
+                else:
+                    player.luck = min(player.luck + self.food_luck_gains[option-1], 100)
+                return 1
+            else:
+                return 0
 
 
 class Board:
@@ -315,7 +332,7 @@ class Board:
         self.pond = Pond("Object Oriented Pond")
         self.bank = Bank("Bank of Avocado")
         self.market = Market("Block No.7 Market")
-        self.restaurant = Restaurant("Object Oriented Restaurant")
+        self.restaurant = Restaurant("Emerald Restaurant")
 
         self.item_list = [
             [self.towers_dict["T4"], self.good_chest],                  #0
