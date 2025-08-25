@@ -166,7 +166,12 @@ class BadChest(Chest):
 class Park(Item):
     def __init__(self, name):
         super().__init__(name)
-    #TODO
+        self.price = 2000
+        self.rent = 0
+        self.owner_id = 0
+
+    def increase_rent(self):
+        self.rent += 20
 
 
 class FishForSale:

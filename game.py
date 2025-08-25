@@ -77,6 +77,35 @@ def game_handle_chest(chest_type, item, player):
     ui.chest.effect_claimed(chest_type)
 
 
+def game_handle_park(item, player):
+    if item.owner_id == 0:
+        choice = ui.park.ask_buy_park(item, player)
+        if choice == "Y":
+            if player.buy_park(item):
+                ui.park.buy_park_success(item, player)
+            else:
+                ui.park.buy_park_failure(item)
+        else:
+            ui.game.alright_press_enter_continue()
+    elif item.owner_id == player.player_id:
+        choice = ui.park.own_park_ask_if_enter()
+        if choice == "Y":
+            player.enter_park()
+            ui.park.now_inside_park()
+        else:
+            ui.game.alright_press_enter_continue()
+    else:
+        target_player = players_list[item.owner_id - 1]
+        ui.park.need_to_pay_rent(item, target_player)
+        if player.pay_rent(item, target_player):
+            ui.park.pay_rent_success(item, player, target_player)
+        else:
+            ui.park.pay_rent_failure(item)
+            ui.game.won(target_player)
+            sys.exit()
+            # TODO: Generalise to more than 2 players
+
+
 def game_handle_pond(item, player):
     fishing_rods_in_backpack = [x for x in player.backpack if isinstance(x, FishingRod)]
     if len(fishing_rods_in_backpack) > 0:
@@ -114,6 +143,14 @@ def game_step(player):
     ui.game.turn_start_roll_dice(player)
     steps, position = player.move()
     ui.game.dice_landed(steps, position)
+    if player.position == 101:
+        game_board.park.increase_rent()
+        ui.park.stuck_in_park_increase_rent()
+        return
+    if player.position == 102:
+        ui.park.stuck_in_park_access_pond()
+        game_handle_pond(game_board.pond, player)
+        return
     accessible_items = game_board.item_list[player.position]
     ui.game.show_accessible_items(accessible_items)
     for item in accessible_items:
@@ -127,8 +164,7 @@ def game_step(player):
         elif isinstance(item, BadChest):
             game_handle_chest("bad", item, player)
         elif isinstance(item, Park):
-            ui.game.feature_not_available()
-            #TODO
+            game_handle_park(item, player)
         elif isinstance(item, Pond):
             game_handle_pond(item, player)
         elif isinstance(item, Bank):

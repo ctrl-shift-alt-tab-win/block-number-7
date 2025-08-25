@@ -13,19 +13,31 @@ class Player:
 
     def move(self):
         steps = random.randint(1, 6)
-        if self.position == 19 and steps != 6:
-            #Will land inside branch road
-            self.position += steps + 8 #Involves jumping from grid 19 to 28
-        elif self.position in [28,29,30,31,32]:
-            #Start inside branch road
-            if self.position + steps >= 33:
-                #Will exit branch road
-                self.position = (self.position + steps - 8) % 28 #Involves jumping from grid 32 to 25
-            else:
-                #Will stay inside branch road
-                self.position += steps
+        if self.position in [101,102]:
+            #Start inside park
+            if steps in [1,2,3,4]:
+                #Stay inside park
+                self.position = 101
+            elif steps == 5:
+                #Go to pond (inside park)
+                self.position = 102
+            elif steps == 6:
+                #Exit park
+                self.position = 31
         else:
-            self.position = (self.position + steps) % 28
+            if self.position == 19 and steps != 6:
+                #Will land inside branch road
+                self.position += steps + 8 #Involves jumping from grid 19 to 28
+            elif self.position in [28,29,30,31,32]:
+                #Start inside branch road
+                if self.position + steps >= 33:
+                    #Will exit branch road
+                    self.position = (self.position + steps - 8) % 28 #Involves jumping from grid 32 to 25
+                else:
+                    #Will stay inside branch road
+                    self.position += steps
+            else:
+                self.position = (self.position + steps) % 28
         return steps, self.position
 
     def buy_property(self, target_property):
@@ -48,12 +60,12 @@ class Player:
             target_property.rent *= 2
             return 1
 
-    def pay_rent(self, target_property, target_player):
-        if self.cash < target_property.rent:
+    def pay_rent(self, target_item, target_player):
+        if self.cash < target_item.rent:
             return False
         else:
-            self.cash -= target_property.rent
-            target_player.cash += target_property.rent
+            self.cash -= target_item.rent
+            target_player.cash += target_item.rent
             return True
 
     def apply_for_job(self, target_job):
@@ -75,3 +87,14 @@ class Player:
             return True
         else:
             return False
+
+    def enter_park(self):
+        self.position = 101
+
+    def buy_park(self, target_park):
+        if self.cash < target_park.price:
+            return False
+        else:
+            self.cash -= target_park.price
+            target_park.owner_id = self.player_id
+            return True
