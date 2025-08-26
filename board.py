@@ -7,14 +7,19 @@ class Item:
         self.name = name
 
 
-class Property(Item):
-    def __init__(self, name, price, initial_rent, group, level=0, owner_id=0):
+class Ownable(Item):
+    def __init__(self, name, price, rent, owner_id):
         super().__init__(name)
         self.price = price
-        self.rent = initial_rent
+        self.rent = rent
+        self.owner_id = owner_id
+
+
+class Property(Ownable):
+    def __init__(self, name, price, initial_rent, group, level=0, owner_id=0):
+        super().__init__(name, price, initial_rent, owner_id)
         self.group = group
         self.level = level
-        self.owner_id = owner_id
 
 
 class Job:
@@ -163,12 +168,9 @@ class BadChest(Chest):
         )
 
 
-class Park(Item):
+class Park(Ownable):
     def __init__(self, name):
-        super().__init__(name)
-        self.price = 2000
-        self.rent = 0
-        self.owner_id = 0
+        super().__init__(name=name, price=1500, rent=0, owner_id=0)
 
     def increase_rent(self):
         self.rent += 20

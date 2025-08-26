@@ -14,14 +14,14 @@ def game_start_routine():
 
 def game_handle_property(item, player):
     if item.owner_id == 0:
-        choice = ui.property.ask_buy_property(item, player)
+        choice = ui.ownable.ask_if_buy(item, player)
         if choice == "Y":
-            if player.buy_property(item):
-                ui.property.buy_property_success(item, player)
+            if player.buy_ownable(item, has_level=True):
+                ui.ownable.buy_success(item, player)
                 if game_board.check_for_complete_group(item.group, player):
                     ui.property.player_own_complete_group(item.group)
             else:
-                ui.property.buy_property_failure(item)
+                ui.ownable.buy_failure(item)
         else:
             ui.game.alright_press_enter_continue()
     elif item.owner_id == player.player_id:
@@ -38,11 +38,11 @@ def game_handle_property(item, player):
             ui.game.alright_press_enter_continue()
     else:
         target_player = players_list[item.owner_id - 1]
-        ui.property.need_to_pay_rent(item, target_player)
-        if player.pay_rent(item, target_player):
-            ui.property.pay_rent_success(item, player, target_player)
+        ui.ownable.need_to_pay_rent(item, target_player)
+        if player.pay_rent_ownable(item, target_player):
+            ui.ownable.pay_rent_success(item, player, target_player)
         else:
-            ui.property.pay_rent_failure(item)
+            ui.ownable.pay_rent_failure(item)
             ui.game.won(target_player)
             sys.exit()
             # TODO: Generalise to more than 2 players
@@ -79,12 +79,12 @@ def game_handle_chest(chest_type, item, player):
 
 def game_handle_park(item, player):
     if item.owner_id == 0:
-        choice = ui.park.ask_buy_park(item, player)
+        choice = ui.ownable.ask_if_buy(item, player)
         if choice == "Y":
-            if player.buy_park(item):
-                ui.park.buy_park_success(item, player)
+            if player.buy_ownable(item, has_level=False):
+                ui.ownable.buy_success(item, player)
             else:
-                ui.park.buy_park_failure(item)
+                ui.ownable.buy_failure(item)
         else:
             ui.game.alright_press_enter_continue()
     elif item.owner_id == player.player_id:
@@ -96,11 +96,11 @@ def game_handle_park(item, player):
             ui.game.alright_press_enter_continue()
     else:
         target_player = players_list[item.owner_id - 1]
-        ui.park.need_to_pay_rent(item, target_player)
-        if player.pay_rent(item, target_player):
-            ui.park.pay_rent_success(item, player, target_player)
+        ui.ownable.need_to_pay_rent(item, target_player)
+        if player.pay_rent_ownable(item, target_player):
+            ui.ownable.pay_rent_success(item, player, target_player)
         else:
-            ui.park.pay_rent_failure(item)
+            ui.ownable.pay_rent_failure(item)
             ui.game.won(target_player)
             sys.exit()
             # TODO: Generalise to more than 2 players

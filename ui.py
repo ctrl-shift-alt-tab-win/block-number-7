@@ -10,7 +10,10 @@ class ConsoleUIGame:
 
     def turn_start_roll_dice(self, player):
         print(f"--------------{player.name}'s turn--------------")
-        print(f"Your cash: {player.cash}")
+        print(f"Your cash: ${player.cash}")
+        if player.job is not None:
+            print(f"Your job: {player.job.title}")
+            print(f"Your salary: ${player.job.salary}")
         print(f"You are at position {player.position}.")
         input("Press ENTER to roll the dice!\n")
 
@@ -39,37 +42,53 @@ class ConsoleUIGame:
         input("Feature currently not available. Press ENTER to continue.\n")
 
 
-# noinspection PyMethodMayBeStatic
-class ConsoleUIProperty:
-    def ask_buy_property(self, item, player):
+class ConsoleUIOwnable:
+    def ask_if_buy(self, item, player):
         print(f"No one owns {item.name}.")
-        print(f"Your cash: {player.cash}")
-        print(f"Cash needed to purchase {item.name}: {item.price}")
+        print(f"Your cash: ${player.cash}")
+        print(f"Cash needed to purchase {item.name}: ${item.price}")
         choice = input(f"Would you like to buy {item.name}? (Y/N): ")
         return choice
 
-    def buy_property_success(self, item, player):
+    def buy_success(self, item, player):
         print(f"Successfully bought {item.name}!")
-        print(f"The rent of {item.name} is currently {item.rent}")
-        print(f"Your cash is now {player.cash}.")
+        print(f"The rent of {item.name} is currently ${item.rent}.")
+        print(f"Your cash is now ${player.cash}.")
         input("Press ENTER to continue.\n")
 
-    def buy_property_failure(self, item):
+    def buy_failure(self, item):
         print(f"Not enough money to buy {item.name}...")
         input("Press ENTER to continue.\n")
 
+    def need_to_pay_rent(self, item, target_player):
+        print(f"Oops, {item.name} is owned by {target_player.name}.")
+        print(f"You need to pay the rent of ${item.rent}.")
+        input("Press ENTER to pay the rent.\n")
+
+    def pay_rent_success(self, item, player, target_player):
+        print(f"Successfully paid ${item.rent} for {item.name}...")
+        print(f"Your cash is now ${player.cash}.")
+        print(f"{target_player.name}'s cash is now ${target_player.cash}.")
+        input("Press ENTER to continue.\n")
+
+    def pay_rent_failure(self, item):
+        print(f"Not enough money to pay rent for {item.name}...")
+
+
+# noinspection PyMethodMayBeStatic
+class ConsoleUIProperty:
     def ask_upgrade_property(self, item, player):
         print(f"You own {item.name}.")
         print(f"{item.name} is at level {item.level}.")
-        print(f"Your cash: {player.cash}")
-        print(f"Upgrade cost: {item.price}")
+        print(f"Your cash: ${player.cash}")
+        print(f"Upgrade cost: ${item.price}")
         choice = input(f"Would you like to upgrade {item.name}? (Y/N): ")
         return choice
 
     def upgrade_property_success(self, item, player):
         print(f"Successfully upgraded {item.name}!")
-        print(f"Your cash is now {player.cash}.")
-        print(f"{item.name} is now at level {item.level} and the rent is now {item.rent}.")
+        print(f"Your cash is now ${player.cash}.")
+        print(f"{item.name} is now at level {item.level} and the rent is now ${item.rent}.")
         input("Press ENTER to continue.\n")
 
     def upgrade_property_failure_max_level(self, item):
@@ -80,20 +99,6 @@ class ConsoleUIProperty:
         print(f"Not enough money to upgrade {item.name}...")
         input("Press ENTER to continue.\n")
 
-    def need_to_pay_rent(self, item, target_player):
-        print(f"Oops, {item.name} is owned by {target_player.name}.")
-        print(f"You need to pay the rent of ${item.rent}.")
-        input("Press ENTER to pay the rent.\n")
-
-    def pay_rent_success(self, item, player, target_player):
-        print(f"Successfully paid ${item.rent} for {item.name}...")
-        print(f"Your cash is now {player.cash}.")
-        print(f"{target_player.name}'s cash is now {target_player.cash}.")
-        input("Press ENTER to continue.\n")
-
-    def pay_rent_failure(self, item):
-        print(f"Not enough money to pay rent for {item.name}...")
-
     def player_own_complete_group(self, letter):
         print(f"You now own all properties in group {letter}! Rent doubled.")
         input("Press ENTER to continue.\n")
@@ -103,7 +108,7 @@ class ConsoleUIProperty:
 class ConsoleUITower:
     def receive_salary(self, player, item):
         print(f"You received ${player.job.salary} salary as {player.job.title} in {item.name}!")
-        print(f"Your cash: {player.cash}")
+        print(f"Your cash: ${player.cash}")
         input("Press ENTER to continue.\n")
 
     def ask_if_looking_for_jobs(self):
@@ -111,10 +116,10 @@ class ConsoleUITower:
         return choice
 
     def show_jobs_wait_application(self, player, item):
-        print(f"Your cash: {player.cash}")
+        print(f"Your cash: ${player.cash}")
         i = 1
         for job in item.jobs:
-            print(f"<PRESS {i} TO APPLY> | {job.title} | Application Cost: {job.application_cost} | Base Offer Rate: {job.offer_rate * 100}% | Salary: {job.salary}")
+            print(f"<PRESS {i} TO APPLY> | {job.title} | Application Cost: ${job.application_cost} | Base Offer Rate: {job.offer_rate * 100}% | Salary: ${job.salary}")
             i += 1
         print("<PRESS ANY OTHER KEY TO CANCEL>\n")
         print("Note: If you receive an offer, any previous job will be discarded.")
@@ -132,7 +137,7 @@ class ConsoleUITower:
     def apply_job_success(self, player):
         print("Congratulations! Your application is accepted.")
         print(f"Your job: {player.job.title}")
-        print(f"Your salary: {player.job.salary}")
+        print(f"Your salary: ${player.job.salary}")
         input("Press ENTER to continue.\n")
 
 
@@ -178,28 +183,11 @@ class ConsoleUIChest:
 
 class ConsoleUIPark:
     def stuck_in_park_increase_rent(self):
-        print("You are stuck inside the park, but the park's rent just increased by 20!")
+        print("You are stuck inside the park, but the park's rent just increased by $20!")
         input("Press ENTER to continue.\n")
 
     def stuck_in_park_access_pond(self):
         print("You are stuck inside the park, but you now have access to the pond!")
-
-    def ask_buy_park(self, item, player):
-        print(f"No one owns {item.name}.")
-        print(f"Your cash: {player.cash}")
-        print(f"Cash needed to purchase {item.name}: {item.price}")
-        choice = input(f"Would you like to buy {item.name}? (Y/N): ")
-        return choice
-
-    def buy_park_success(self, item, player):
-        print(f"Successfully bought {item.name}!")
-        print(f"The rent of {item.name} is currently ${item.rent}.")
-        print(f"Your cash is now {player.cash}.")
-        input("Press ENTER to continue.\n")
-
-    def buy_park_failure(self, item):
-        print(f"Not enough money to buy {item.name}...")
-        input("Press ENTER to continue.\n")
 
     def own_park_ask_if_enter(self):
         print("You own this park.")
@@ -209,20 +197,6 @@ class ConsoleUIPark:
     def now_inside_park(self):
         print("You are now inside the park.")
         input("Press ENTER to continue.\n")
-
-    def need_to_pay_rent(self, item, target_player):
-        print(f"Oops, {item.name} is owned by {target_player.name}.")
-        print(f"You need to pay the rent of ${item.rent}.")
-        input("Press ENTER to pay the rent.\n")
-
-    def pay_rent_success(self, item, player, target_player):
-        print(f"Successfully paid ${item.rent} for {item.name}...")
-        print(f"Your cash is now ${player.cash}.")
-        print(f"{target_player.name}'s cash is now ${target_player.cash}.")
-        input("Press ENTER to continue.\n")
-
-    def pay_rent_failure(self, item):
-        print(f"Not enough money to pay rent for {item.name}...")
 
 
 class ConsoleUIPond:
@@ -290,6 +264,7 @@ class ConsoleUIRestaurant:
 class ConsoleUI:
     def __init__(self):
         self.game = ConsoleUIGame()
+        self.ownable = ConsoleUIOwnable()
         self.property = ConsoleUIProperty()
         self.tower = ConsoleUITower()
         self.chest = ConsoleUIChest()

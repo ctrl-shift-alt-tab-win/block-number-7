@@ -40,17 +40,26 @@ class Player:
                 self.position = (self.position + steps) % 28
         return steps, self.position
 
-    def buy_property(self, target_property):
-        if self.cash < target_property.price:
+    def buy_ownable(self, target_ownable, has_level):
+        if self.cash < target_ownable.price:
             return False
         else:
-            self.cash -= target_property.price
-            target_property.owner_id = self.player_id
-            target_property.level = 1
+            self.cash -= target_ownable.price
+            target_ownable.owner_id = self.player_id
+            if has_level:
+                target_ownable.level = 1
+            return True
+
+    def pay_rent_ownable(self, target_ownable, target_player):
+        if self.cash < target_ownable.rent:
+            return False
+        else:
+            self.cash -= target_ownable.rent
+            target_player.cash += target_ownable.rent
             return True
 
     def upgrade_property(self, target_property):
-        if target_property.level == 3:
+        if target_property.level == 5:
             return 0
         elif self.cash < target_property.price:
             return -1
@@ -59,14 +68,6 @@ class Player:
             target_property.level += 1
             target_property.rent *= 2
             return 1
-
-    def pay_rent(self, target_item, target_player):
-        if self.cash < target_item.rent:
-            return False
-        else:
-            self.cash -= target_item.rent
-            target_player.cash += target_item.rent
-            return True
 
     def apply_for_job(self, target_job):
         if self.cash < target_job.application_cost:
@@ -90,11 +91,3 @@ class Player:
 
     def enter_park(self):
         self.position = 101
-
-    def buy_park(self, target_park):
-        if self.cash < target_park.price:
-            return False
-        else:
-            self.cash -= target_park.price
-            target_park.owner_id = self.player_id
-            return True
