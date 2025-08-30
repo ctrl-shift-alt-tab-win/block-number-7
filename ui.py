@@ -14,6 +14,7 @@ class ConsoleUIGame:
         if player.job is not None:
             print(f"Your job: {player.job.title}")
             print(f"Your salary: ${player.job.salary}")
+        print(f"Your backpack: {len(player.backpack)}/{player.backpack_limit} items")
         print(f"You are at position {player.position}.")
         input("Press ENTER to roll the dice!\n")
 
@@ -30,6 +31,25 @@ class ConsoleUIGame:
 
     def consider_an_item(self, item):
         print(f"Considering {item.name}...")
+
+    def backpack_full(self):
+        print("Sorry, your backpack is full.")
+        input("Press ENTER to continue.\n")
+
+    def ask_if_use_controllable_dice(self, player):
+        print(f"You have {player.backpack.count("Controllable Dice")} controllable dice.")
+        choice = input("Do you want to use one? (Y/N): ")
+        return choice
+
+    def wait_integer_1_6(self):
+        print("Alright!")
+        number = input("Please enter an integer between 1 and 6: ")
+        return number
+
+    def not_enter_integer_1_6(self):
+        print("Sorry, you didn't enter an integer between 1 and 6.")
+        print("Normal dice will be used.")
+        input("Press ENTER to continue.\n")
 
     def alright_press_enter_continue(self):
         input("Alright. Press ENTER to continue.\n")
@@ -180,6 +200,11 @@ class ConsoleUIChest:
             print("Punishment claimed.")
         input("Press ENTER to continue.\n")
 
+    def awful_luck_shield_activated(self, player):
+        print("Awful luck shield activated!")
+        print(f"You have {player.backpack.count("Awful Luck Shield")} awful luck shield left.")
+        input("Press ENTER to continue.\n")
+
 
 class ConsoleUIPark:
     def stuck_in_park_increase_rent(self):
@@ -210,10 +235,10 @@ class ConsoleUIPond:
         choice_number = input("Please enter your choice: ")
         return choice_number, (i-1)
 
-    def show_fish_caught(self, name, description, price):
+    def show_fish_caught(self, name, description, price, rarity):
         print(f"You caught something... ")
         input("Press ENTER to reveal!\n")
-        print(f"*** {name} ***")
+        print(f"*** ({rarity}) {name} ***")
         print(f"\"{description}\"")
         print(f"Can be sold for: ${price}\n")
         input("Press ENTER to continue.\n")
@@ -226,13 +251,76 @@ class ConsoleUIPond:
         print("You don't have any fishing rod.")
         input("Press ENTER to continue.\n")
 
+    def ask_if_use_glowing_bait(self, player):
+        print(f"You have {player.backpack.count("Glowing Bait")} glowing bait.")
+        choice = input("Do you want to use one? (Y/N): ")
+        return choice
+
+    def attached_glowing_bait(self):
+        print("Successfully attached glowing bait.")
+        input("Press ENTER to continue.\n")
+
 
 class ConsoleUIBank:
     pass
 
 
 class ConsoleUIMarket:
-    pass
+    def show_option_buy_sell_wait_choice(self):
+        print("<PRESS 1 TO BUY>")
+        print("<PRESS 2 TO SELL>")
+        print("<PRESS ANY OTHER KEY TO CANCEL>\n")
+        choice_number = input("Please enter your choice: ")
+        return choice_number
+
+    def show_market_buy_wait_choice(self, player):
+        print(f"<<< MARKET (BUYING) >>>")
+        print(f"<PRESS 1> | 1x Makeshift Fishing Rod | $59  | Can fish 3 times, accessing easy fish                              | Remaining Purchases: {player.limit_dict["Makeshift Fishing Rod"]}")
+        print(f"<PRESS 2> | 1x Standard Fishing Rod  | $159 | Can fish 5 times, accessing easy & medium fish                     | Remaining Purchases: {player.limit_dict["Standard Fishing Rod"]}")
+        print(f"<PRESS 3> | 1x Fine Fishing Rod      | $319 | Can fish 7 times, accessing easy & medium & hard fish              | Remaining Purchases: {player.limit_dict["Fine Fishing Rod"]}")
+        print(f"<PRESS 4> | 1x Golden Fishing Rod    | $599 | Can fish 9 times, accessing easy & medium & hard & impossible fish | Remaining Purchases: {player.limit_dict["Golden Fishing Rod"]}")
+        print(f"<PRESS 5> | 1x Glowing Bait          | $39  | Can only attach to golden rod, guarantees hard & impossible fish   | Remaining Purchases: {player.limit_dict["Glowing Bait"]}")
+        print(f"<PRESS 6> | 1x Controllable Dice     | $119 | Allows you to control your dice rolling outcome for one time       | Remaining Purchases: {player.limit_dict["Controllable Dice"]}")
+        print(f"<PRESS 7> | 1x Awful Luck Shield     | $199 | Exempted once if getting an Awful/Awful+/Awful++ from bad chest    | Remaining Purchases: {player.limit_dict["Awful Luck Shield"]}")
+        print(f"<PRESS 8> | Backpack Upgrade         | $400 | Double the space of your backpack (4 items -> 8 items -> 16 items) | Remaining Purchases: {player.limit_dict["Backpack Upgrade"]}")
+        print(f"<PRESS ANY OTHER KEY TO CANCEL>\n")
+        print(f"Note: You can buy at most one item at a time.")
+        choice_number_inner = input("Please enter your choice: ")
+        return choice_number_inner
+
+    def max_purchase_limit_reached(self):
+        print("Sorry, maximum purchase limit already reached.")
+        input("Press ENTER to continue.\n")
+
+    def not_enough_money_buy_item(self):
+        print(f"Not enough money to buy this item...")
+        input("Press ENTER to continue.\n")
+
+    def purchase_success_item_added_backpack(self):
+        print("Successfully purchased!")
+        print("The item is added to your backpack.")
+        input("Press ENTER to continue.\n")
+
+    def purchase_success_backpack_upgraded(self, player):
+        print("Successfully purchased!")
+        print(f"Your backpack space is now {player.backpack_limit}.")
+        input("Press ENTER to continue.\n")
+
+    def no_sellable_item(self):
+        print("Sorry, none of the items in your backpack can be sold.")
+        input("Press ENTER to continue.\n")
+
+    def show_market_selling_title(self):
+        print("<<< MARKET (SELLING) >>>")
+
+    def sell_item_wait_choice(self, thing):
+        print(f"{thing.name} | Can be sold for: ${thing.price}")
+        choice = input("Do you want to sell this item? (Y/N): ")
+        return choice
+
+    def sold_success(self):
+        print("Successfully sold!")
+        input("Press ENTER to continue.\n")
 
 
 class ConsoleUIRestaurant:

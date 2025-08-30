@@ -10,9 +10,32 @@ class Player:
         self.job = None
         self.luck = 0
         self.backpack = []
+        self.backpack_limit = 4
+        self.limit_dict = {
+            "Makeshift Fishing Rod": 1000,
+            "Standard Fishing Rod": 1000,
+            "Fine Fishing Rod": 1000,
+            "Golden Fishing Rod": 1000,
+            "Glowing Bait": 5,
+            "Controllable Dice": 5,
+            "Awful Luck Shield": 2,
+            "Backpack Upgrade": 2
+        }
 
-    def move(self):
-        steps = random.randint(1, 6)
+    def have_glowing_bait(self):
+        return "Glowing Bait" in self.backpack
+
+    def have_controllable_dice(self):
+        return "Controllable Dice" in self.backpack
+
+    def have_awful_luck_shield(self):
+        return "Awful Luck Shield" in self.backpack
+
+    def move(self, supplied_number):
+        if supplied_number is None:
+            steps = random.randint(1, 6)
+        else:
+            steps = supplied_number
         if self.position in [101,102]:
             #Start inside park
             if steps in [1,2,3,4]:
@@ -91,3 +114,7 @@ class Player:
 
     def enter_park(self):
         self.position = 101
+
+    def sell_fish(self, fish_for_sale):
+        self.cash += fish_for_sale.price
+        self.backpack.remove(fish_for_sale)

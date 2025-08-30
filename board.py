@@ -91,7 +91,8 @@ class Chest(Item):
                     p.cash -= amount
                     player.cash += amount
         elif card == "Standard Fishing Rod":
-            player.backpack.append(FishingRod("Standard Fishing Rod", 2, 7))
+            if len(player.backpack) < player.backpack_limit:
+                player.backpack.append(FishingRod("Standard Fishing Rod", 2, 5))
         elif card == "Cash +70":
             player.cash += 70
         elif card == "Cash +50":
@@ -202,28 +203,29 @@ class PondObject:
 class Pond(Item):
     def __init__(self, name):
         super().__init__(name)
+        self.rarity_dict = {1: "Easy", 2: "Medium", 3: "Hard", 4: "Impossible"}
         self.pond_object_list = [
-            PondObject("Silver Minnow", 1, 1, 5, 50, "Tiny schooling fish, shiny scales."),
-            PondObject("Spotted Pond Perch", 1, 10, 20, 50, "Small freshwater fish with green spots."),
-            PondObject("Bluegill Sunfish", 1, 10, 30, 50, "Round, flat, and very common near ponds."),
-            PondObject("River Catfish", 1, 10, 90, 30, "Whiskered bottom-dweller, always hungry."),
-            PondObject("Rusty Crab", 1, 5, 10, 20, "Tiny, aggressive claws, easy to net."),
-            PondObject("Glass Carp", 2, 5, 65, 80, "Nearly transparent body, eerie but beautiful."),
-            PondObject("Speckled Tilapia", 2, 25, 35, 60, "Hardy farmed fish, mild taste."),
-            PondObject("Spotted River Eel", 2, 40, 80, 40, "Slimy, slippery, wriggles out of nets."),
-            PondObject("Red Claw Crayfish", 2, 15, 45, 40, "Small lobster-like creature, tasty claws."),
-            PondObject("Painted Goby", 2, 15, 25, 20, "Tiny but brightly colored, like a rainbow."),
-            PondObject("Dusky Pufferfish", 2, 40, 60, 20, "Inflates when startled, silly face."),
-            PondObject("Rainbow Koi", 3, 40, 50, 100, "Decorative carp, shimmering patterns."),
-            PondObject("Steelhead Salmon", 3, 100, 150, 50, "Muscular salmon, hard to reel in."),
-            PondObject("Rock Lobster", 3, 50, 70, 40, "Large spiny lobster, strong shell."),
-            PondObject("Electric Catfish", 3, 20, 40, 20, "Delivers mild shocks when handled."),
-            PondObject("Velvet Stingray", 3, 120, 180, 10, "Flat, smooth body, hides in silt."),
-            PondObject("Black Pike", 3, 100, 140, 5, "Long predator fish, sharp teeth."),
-            PondObject("Orchid Betta", 4, 160, 170, 20, "Are you actually reading these descriptions?"),
-            PondObject("River Otter", 4, 180, 240, 10, "It keeps stealing my bait."),
-            PondObject("Great White Shark", 4, 200, 400, 10, "It's a relief that it was only going for my bait."),
-            PondObject("Blue Whale", 4, 1000, 2000, 1, "I never knew this thing fits inside a pond.")
+            PondObject("Silver Minnow", 1, 2, 10, 50, "Tiny schooling fish, shiny scales."),
+            PondObject("Spotted Pond Perch", 1, 20, 40, 50, "Small freshwater fish with green spots."),
+            PondObject("Bluegill Sunfish", 1, 20, 60, 50, "Round, flat, and very common near ponds."),
+            PondObject("River Catfish", 1, 20, 180, 30, "Whiskered bottom-dweller, always hungry."),
+            PondObject("Rusty Crab", 1, 10, 20, 20, "Tiny, aggressive claws, easy to net."),
+            PondObject("Glass Carp", 2, 10, 130, 80, "Nearly transparent body, eerie but beautiful."),
+            PondObject("Speckled Tilapia", 2, 50, 70, 60, "Hardy farmed fish, mild taste."),
+            PondObject("Spotted River Eel", 2, 80, 160, 40, "Slimy, slippery, wriggles out of nets."),
+            PondObject("Red Claw Crayfish", 2, 30, 90, 40, "Small lobster-like creature, tasty claws."),
+            PondObject("Painted Goby", 2, 30, 50, 20, "Tiny but brightly colored, like a rainbow."),
+            PondObject("Dusky Pufferfish", 2, 80, 120, 20, "Inflates when startled, silly face."),
+            PondObject("Rainbow Koi", 3, 80, 100, 100, "Decorative carp, shimmering patterns."),
+            PondObject("Steelhead Salmon", 3, 200, 300, 50, "Muscular salmon, hard to reel in."),
+            PondObject("Rock Lobster", 3, 100, 140, 40, "Large spiny lobster, strong shell."),
+            PondObject("Electric Catfish", 3, 40, 80, 20, "Delivers mild shocks when handled."),
+            PondObject("Velvet Stingray", 3, 240, 360, 10, "Flat, smooth body, hides in silt."),
+            PondObject("Black Pike", 3, 200, 280, 5, "Long predator fish, sharp teeth."),
+            PondObject("Orchid Betta", 4, 320, 340, 20, "Are you actually reading these descriptions?"),
+            PondObject("River Otter", 4, 360, 480, 10, "It keeps stealing my bait."),
+            PondObject("Great White Shark", 4, 400, 800, 10, "It's a relief that it was only going for my bait."),
+            PondObject("Blue Whale", 4, 2000, 4000, 1, "I never knew this thing fits inside a pond.")
         ]
 
     def get_random_fish(self, player, fishing_rod):
@@ -236,7 +238,22 @@ class Pond(Item):
             weights = [y.frequency for y in objects]
             fish = random.choices(population=objects, weights=weights, k=1)[0]
             price = random.randint(fish.price_min, fish.price_max)
-            return fish.name, fish.description, price
+            return fish.name, fish.description, price, self.rarity_dict[fish.requirement]
+        else:
+            return None
+
+    def get_random_fish_glowing_bait(self, player, fishing_rod):
+        p = 0.5 + (player.luck / 200)
+        fishing_rod.health -= 1
+        player.backpack.remove("Glowing Bait")
+        if fishing_rod.health <= 0:
+            player.backpack.remove(fishing_rod)
+        if random.random() < p:
+            objects = [x for x in self.pond_object_list if x.requirement in [3,4]]
+            weights = [y.frequency for y in objects]
+            fish = random.choices(population=objects, weights=weights, k=1)[0]
+            price = random.randint(fish.price_min, fish.price_max)
+            return fish.name, fish.description, price, self.rarity_dict[fish.requirement]
         else:
             return None
 
@@ -250,7 +267,18 @@ class Bank(Item):
 class Market(Item):
     def __init__(self, name):
         super().__init__(name)
-    #TODO
+        self.market_item_list = [
+            FishingRod("Makeshift Fishing Rod", 1, 3),
+            FishingRod("Standard Fishing Rod", 2, 5),
+            FishingRod("Fine Fishing Rod", 3, 7),
+            FishingRod("Golden Fishing Rod", 4, 9),
+            "Glowing Bait",
+            "Controllable Dice",
+            "Awful Luck Shield",
+            None
+        ]
+        self.market_item_price_list = [59, 159, 319, 599, 39, 119, 199, 400]
+        self.market_item_name_list = ["Makeshift Fishing Rod", "Standard Fishing Rod", "Fine Fishing Rod", "Golden Fishing Rod", "Glowing Bait", "Controllable Dice", "Awful Luck Shield", "Backpack Upgrade"]
 
 
 class Restaurant(Item):
