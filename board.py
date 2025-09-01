@@ -258,10 +258,25 @@ class Pond(Item):
             return None
 
 
+class Loan:
+    def __init__(self, loan_id, borrow_amount, pay_amount_each_time, number_of_payments):
+        self.loan_id = loan_id
+        self.borrow_amount = borrow_amount
+        self.pay_amount_each_time = pay_amount_each_time
+        self.number_of_payments = number_of_payments
+        self.pay_amount_total = pay_amount_each_time * number_of_payments
+
+
 class Bank(Item):
     def __init__(self, name):
         super().__init__(name)
-    #TODO
+        self.loan_list = [
+            Loan(1, 500, 150, 4),
+            Loan(2, 1000, 200, 6),
+            Loan(3, 1500, 300, 6),
+            Loan(4, 2000, 300, 8),
+            Loan(5, 2000, 100, 28)
+        ]
 
 
 class Market(Item):

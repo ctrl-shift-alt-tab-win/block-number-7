@@ -8,9 +8,21 @@ from ui import ConsoleUI
 
 def game_start_routine():
     ui.game.welcome()
-    player1_name, player2_name = ui.game.enter_names()
-    players = [Player(1, player1_name), Player(2, player2_name)]
+    num_players = ui.game.enter_num_players()
+    players = []
+    for i in range(1, num_players+1):
+        name = ui.game.enter_player_name(i)
+        players.append(Player(i, name))
     return players
+
+
+def game_end_routine(player):
+    ui.game.player_lost(player)
+    player.alive = False
+    remaining_players = [p for p in players_list if p.alive]
+    if len(remaining_players) == 1:
+        ui.game.won(remaining_players[0])
+        sys.exit()
 
 
 def game_handle_property(item, player):
@@ -44,9 +56,7 @@ def game_handle_property(item, player):
             ui.ownable.pay_rent_success(item, player, target_player)
         else:
             ui.ownable.pay_rent_failure(item)
-            ui.game.won(target_player)
-            sys.exit()
-            # TODO: Generalise to more than 2 players
+            game_end_routine(player)
 
 
 def game_handle_tower(item, player):
@@ -106,10 +116,7 @@ def game_handle_park(item, player):
             ui.ownable.pay_rent_success(item, player, target_player)
         else:
             ui.ownable.pay_rent_failure(item)
-            ui.game.won(target_player)
-            sys.exit()
-            # TODO: Generalise to more than 2 players
-
+            game_end_routine(player)
 
 def game_handle_pond(item, player):
     fishing_rods_in_backpack = [x for x in player.backpack if isinstance(x, FishingRod)]
@@ -140,6 +147,36 @@ def game_handle_pond(item, player):
             ui.game.alright_press_enter_continue()
     else:
         ui.pond.no_fishing_rod()
+
+
+def game_handle_bank(item, player):
+    if player.loan is None:
+        choice = ui.bank.ask_if_take_loan()
+        if choice == "Y":
+            choice_number = ui.bank.show_loans_wait_choice(item)
+            if choice_number in ["1", "2", "3", "4", "5"]:
+                selected_loan = item.loan_list[int(choice_number) - 1]
+                player.loan = selected_loan
+                player.loan_remaining_number_of_payments = selected_loan.number_of_payments
+                player.cash += selected_loan.borrow_amount
+                ui.bank.borrow_money_success(player, selected_loan)
+            else:
+                ui.game.alright_press_enter_continue()
+        else:
+            ui.game.alright_press_enter_continue()
+    else:
+        ui.bank.need_to_pay_loan(player)
+        if player.cash < player.loan.pay_amount_each_time:
+            ui.bank.not_enough_money_pay_loan()
+            game_end_routine(player)
+        else:
+            player.cash -= player.loan.pay_amount_each_time
+            player.loan_remaining_number_of_payments -= 1
+            ui.bank.pay_loan_success(player)
+            if player.loan_remaining_number_of_payments == 0:
+                player.loan = None
+                player.lon_remaining_number_of_payments = None
+                ui.bank.fully_repaid_loan()
 
 
 def game_handle_market(item, player):
@@ -247,8 +284,7 @@ def game_step(player):
         elif isinstance(item, Pond):
             game_handle_pond(item, player)
         elif isinstance(item, Bank):
-            ui.game.feature_not_available()
-            #TODO
+            game_handle_bank(item, player)
         elif isinstance(item, Market):
             game_handle_market(item, player)
         elif isinstance(item, Restaurant):
@@ -259,4 +295,5 @@ ui = ConsoleUI()
 players_list = game_start_routine()
 while True:
     for current_player in players_list:
-        game_step(current_player)
+        if current_player.alive:
+            game_step(current_player)

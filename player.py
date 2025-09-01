@@ -6,8 +6,11 @@ class Player:
         self.player_id = player_id
         self.name = name
         self.cash = cash_initial
+        self.alive = True
         self.position = 0
         self.job = None
+        self.loan = None
+        self.loan_remaining_number_of_payments = None
         self.luck = 0
         self.backpack = []
         self.backpack_limit = 4

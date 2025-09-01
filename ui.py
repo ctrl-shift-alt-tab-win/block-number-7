@@ -3,10 +3,13 @@ class ConsoleUIGame:
     def welcome(self):
         print("Welcome!")
 
-    def enter_names(self):
-        player1_name = input("Enter name of player 1: ")
-        player2_name = input("Enter name of player 2: ")
-        return player1_name, player2_name
+    def enter_num_players(self):
+        num_players = int(input("Enter the number of players: "))
+        return num_players
+
+    def enter_player_name(self, i):
+        name = input(f"Enter the name of player {i}: ")
+        return name
 
     def turn_start_roll_dice(self, player):
         print(f"--------------{player.name}'s turn--------------")
@@ -54,6 +57,10 @@ class ConsoleUIGame:
     def alright_press_enter_continue(self):
         input("Alright. Press ENTER to continue.\n")
 
+    def player_lost(self, player):
+        print(f"{player.name} LOST...")
+        input("Press ENTER to continue.\n")
+
     def won(self, target_player):
         print(f"{target_player.name} WON!!!")
         input("Press ENTER to exit.\n")
@@ -62,6 +69,7 @@ class ConsoleUIGame:
         input("Feature currently not available. Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIOwnable:
     def ask_if_buy(self, item, player):
         print(f"No one owns {item.name}.")
@@ -206,6 +214,7 @@ class ConsoleUIChest:
         input("Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIPark:
     def stuck_in_park_increase_rent(self):
         print("You are stuck inside the park, but the park's rent just increased by $20!")
@@ -224,6 +233,7 @@ class ConsoleUIPark:
         input("Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIPond:
     def show_fishing_rods_wait_choice(self, fishing_rods_in_backpack):
         print("Your fishing rods: ")
@@ -261,10 +271,46 @@ class ConsoleUIPond:
         input("Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIBank:
-    pass
+    def ask_if_take_loan(self):
+        choice = input("Do you want to take a loan? (Y/N): ")
+        return choice
+
+    def show_loans_wait_choice(self, item):
+        print("<<< LOANS >>>")
+        for i in range(1, 6):
+            loan = item.loan_list[i - 1]
+            print(f"<PRESS {i}> | Borrow Amount: ${loan.borrow_amount} | Pay ${loan.pay_amount_each_time} Each Time Landing at Bank | {loan.number_of_payments} payments")
+        print("<PRESS ANY OTHER KEY TO CANCEL>\n")
+        print("Note: You can take at most one loan at a time.")
+        choice_number = input("Please enter your choice: ")
+        return choice_number
+
+    def borrow_money_success(self, player, selected_loan):
+        print("Success!")
+        print(f"You borrowed ${selected_loan.borrow_amount}.")
+        print(f"Your cash: ${player.cash}")
+        input("Press ENTER to continue.\n")
+
+    def need_to_pay_loan(self, player):
+        print(f"You have to pay ${player.loan.pay_amount_each_time} for your loan.")
+        input("Press ENTER to pay.\n")
+
+    def pay_loan_success(self, player):
+        print("Success!")
+        print(f"You will pay ${player.loan.pay_amount_each_time} {player.loan_remaining_number_of_payments} more times.")
+        input("Press ENTER to continue.\n")
+
+    def fully_repaid_loan(self):
+        print("You have now fully repaid the loan!")
+        input("Press ENTER to continue.\n")
+
+    def not_enough_money_pay_loan(self):
+        print("You don't have enough money to pay for your loan...")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIMarket:
     def show_option_buy_sell_wait_choice(self):
         print("<PRESS 1 TO BUY>")
@@ -323,6 +369,7 @@ class ConsoleUIMarket:
         input("Press ENTER to continue.\n")
 
 
+# noinspection PyMethodMayBeStatic
 class ConsoleUIRestaurant:
     def show_menu_wait_choice(self, player):
         print("<<< MENU >>>")
