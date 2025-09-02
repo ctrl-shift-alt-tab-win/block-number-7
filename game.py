@@ -175,7 +175,7 @@ def game_handle_bank(item, player):
             ui.bank.pay_loan_success(player)
             if player.loan_remaining_number_of_payments == 0:
                 player.loan = None
-                player.lon_remaining_number_of_payments = None
+                player.loan_remaining_number_of_payments = None
                 ui.bank.fully_repaid_loan()
 
 
