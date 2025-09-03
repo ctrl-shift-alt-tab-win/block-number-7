@@ -6,6 +6,12 @@ The project began as a Tkinter-based Monopoly clone and has since evolved into a
 
 ---
 
+## Board Layout
+
+![Board Layout](docs/board_pic.png)
+
+---
+
 ## Features
 - **The Board**: Every item (e.g., a restaurant) is placed on a 10x10 grid. You can interact with items adjacent to your position, adding a spatial element to strategy.
 - **Properties**: Purchase and upgrade properties. Collect rent when other players land on grids adjacent to your property.
